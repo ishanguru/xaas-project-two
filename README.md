@@ -2,15 +2,17 @@ Team Name: JUSTaaS
 
 Ishan Guru (ig2333)
 Nachiket Mrugank Paranjape (nmp2139)
+Brennan Wallace (bgw2119)
 Jonathan Conor Voss (jcv2130)
 James Young (jty2106)
 
-SEEKAdvd - why rento when you can buy?
+SEEKAdvd - why rent when you can buy?
 
-Validating credit card transaction via Stripe - frontend/js/controller.js
+Orchestrator handles communication between the UI and services. 
 
-Logon to service with JWTs running between the UI static html pages and our user backend
+Services: 
+	- Customer login/logout/register
+	- Payment transactions (service that also links to Stripe)
+	- Customer specific information (previous orders, etc.)
 
-customer transactions recorded in our database after each transaction
-
-Elastic Beanstalk hosts user service
+All services are AWS Lambda services
