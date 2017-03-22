@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<link rel="stylesheet" href="./static/css/bootstrap.css">
+    <link rel="stylesheet" href="./static/css/w3.css">
+    <link rel="stylesheet" href="./static/css/w3-theme-black.css">
+    <link rel="stylesheet" href="./static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="./static/css/slider.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="http://darsa.in/sly/examples/js/vendor/plugins.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sly/1.6.1/sly.min.js"></script>
+    <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+    <script src="./static/js/slider.js"></script>
+    <script src="./static/js/slider2.js"></script>
+    <script src="./static/js/controller.js"></script>
+    <script src="./static/js/bootstrap.min.js"></script>
+
+    <title>seekaDvd</title>
+  </head>
+
+  <body>
+  <div class="w3-top">
+      <ul class="w3-navbar w3-white w3-wide w3-padding-6 w3-card-2">
+          <li class="w3-hide-medium w3-hide-large w3-opennav w3-right">
+              <a class="w3-hover-white w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars"></i></a>
+          </li>
+          <li><a href="#home" class="w3-margin-left"><i><b>SEEKAdvd</b></i></a></li>
+
+          <!-- Float links to the right. Hide them on small screens -->
+          <li class="w3-right w3-hide-small"><a href="#about">ABOUT</a></li>
+          <li class="w3-right w3-hide-small"><a href="#about">SETTINGS</a></li>
+          <li class="w3-right w3-hide-small"><a href="#helpModal" data-toggle="modal" data-target="#helpModal"><span class="simpleCart_quantity"></span> | VIEW CART</a></li>
+          <li class="w3-right w3-hide-small"></li>
+
+      </ul>
+  </div>
+
+  <div class="container">
+    <div id="titlefont">SEEKAdvd</div>
+    <div id="catchphrasefont">Your one stop dvd shop ...</div>
+  </div>
+
+   <!-- ###################### -->
+
+    <!-- Help Modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">This will be our stripe checkout stuff</h4>
+         </div>
+          <div class="modal-body">
+                <form action="/URL" method="POST" id="payment-form">
+                  <span class="payment-errors"></span>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                        <div class="simpleCart_items"></div>
+                    </div>
+                    <div class="col-md-6">
+                      <br><br><br><br><br><br><br><br>
+                      <div class="form-row">
+                          <label>
+                            <span>Card Number</span>
+                            <input type="text" size="20" data-stripe="number">
+                          </label>
+                        </div>
+
+                        <div class="form-row">
+                          <label>
+                            <span>Expiration (MM/YY)</span>
+                            <input type="text" size="2" data-stripe="exp_month">
+                          </label>
+                          <span> / </span>
+                          <input type="text" size="2" data-stripe="exp_year">
+                        </div>
+
+                        <div class="form-row">
+                          <label>
+                            <span>CVC</span>
+                            <input type="text" size="4" data-stripe="cvc">
+                          </label>
+                        </div>
+
+                        <div class="form-row">
+                          <label>
+                              <span>ZIP</span>
+                              <input id="zip" size="5" type="text" name="address_zip" data-stripe="address_zip">
+                            </label>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="simpleCart_total"></div>
+                  <br>
+                  <div align="center">
+                    <input type="submit" class="submit btn btn-success" value="Submit Payment">&nbsp;
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel Payment</button>
+                  </div>
+                </form>
+            <div class="modal-footer">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+     <!-- ###################### -->
+     <br>
+
+     <div id="moviecontainer">
+        <div class="row" align="center">
+          <div class="col-md-3">
+            <img src="static/images/fight_club.jpg" class="img-responsive" alt="fightclub" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> Fight Club </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$12.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <img src="static/images/die_hard.jpg" class="img-responsive" alt="diehard" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> Die Hard </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$9.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <img src="static/images/shooter.jpg" class="img-responsive" alt="shooter" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> Shooter </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$10.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <img src="static/images/pulp_fiction.jpg" class="img-responsive" alt="pulpfiction" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> Pulp Fiction </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$12.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="row" align="center">
+          <div class="col-md-3">
+            <img src="static/images/braveheart.jpg" class="img-responsive" alt="braveheart" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> Braveheart </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$9.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <img src="static/images/the_godfather.jpg" class="img-responsive" alt="thegodfather" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> The Godfather </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$9.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <img src="static/images/the_matrix.jpg" class="img-responsive" alt="thematrix" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> The Matrix </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$8.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <img src="static/images/tropic_thunder.jpg" class="img-responsive" alt="tropicthunder" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> Tropic Thunder </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$8.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="row" align="center">
+          <div class="col-md-3">
+            <img src="static/images/dark_knight.jpg" class="img-responsive" alt="darkknight" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> The Dark Knight </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$14.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <img src="static/images/gladiator.jpg" class="img-responsive" alt="gladiator" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> Gladiator </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$12.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <img src="static/images/inception.jpg" class="img-responsive" alt="inception" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> Inception </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$13.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <img src="static/images/i_am_legend.jpg" class="img-responsive" alt="iamlegend" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> I Am Legend </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$12.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+        </div>
+     </div>
+
+    <script src="js/simpleCart.js"></script>
+    <script src="https://use.fontawesome.com/37b4cff8f4.js"></script>
+
+  </body>
+</html>

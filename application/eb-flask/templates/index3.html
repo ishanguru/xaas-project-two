@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<link rel="stylesheet" href="./static/css/bootstrap.css">
+    <link rel="stylesheet" href="./static/css/w3.css">
+    <link rel="stylesheet" href="./static/css/w3-theme-black.css">
+    <link rel="stylesheet" href="./static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="./static/css/slider.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="http://darsa.in/sly/examples/js/vendor/plugins.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sly/1.6.1/sly.min.js"></script>
+    <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+    <script src="./static/js/controller.js"></script>
+    <script src="./static/js/bootstrap.min.js"></script>
+
+    <title>seekaDvd</title>
+  </head>
+
+  <body>
+  <div class="w3-top">
+      <ul class="w3-navbar w3-white w3-wide w3-padding-6 w3-card-2">
+          <li class="w3-hide-medium w3-hide-large w3-opennav w3-right">
+              <a class="w3-hover-white w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars"></i></a>
+          </li>
+          <li><a href="#home" class="w3-margin-left"><i><b>SEEKAdvd</b></i></a></li>
+
+          <!-- Float links to the right. Hide them on small screens -->
+          <li class="w3-right w3-hide-small"><a href="{{ url_for('logout') }}">LOGOUT</a></li>
+          <li class="w3-right w3-hide-small"><a href="#user">{{ email }}</a></li>
+          <li class="w3-right w3-hide-small"><a href="#aboutModal" data-toggle="modal" data-target="#aboutModal">ABOUT</a></li>
+          <li class="w3-right w3-hide-small"><a href="#historyModal" data-toggle="modal" data-target="#historyModal">HISTORY</a></li>
+          <li class="w3-right w3-hide-small"><a href="#helpModal" data-toggle="modal" data-target="#helpModal"><span class="simpleCart_quantity"></span> | VIEW CART</a></li>
+          <li class="w3-right w3-hide-small"></li>
+
+      </ul>
+  </div>
+
+  <div class="container">
+    <div id="titlefont">SEEKAdvd</div>
+    <div id="catchphrasefont">Your one stop dvd shop ...</div>
+  </div>
+
+   <!-- ###################### -->
+
+   <!-- about Modal -->
+    <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h5 class="modal-title" id="myModalLabel" align="center"><b>About SEEKAdvd</b></h4>
+         </div>
+          <div class="modal-body">
+            <h5>SeekaDVD is your one stop DVD shop. We provide thousands of award-winning movies, TV shows, documentaries and more, all at discounted prices. With SeekaDVD, the process of finding and purchasing the title you’re looking for is fast and simple due to streamlined checkout procedures. Rather than having to wait for your new DVD’s for days, SeekaDVD allows you to download purchased material instantly to your registered device. With new content added daily, SeekaDVD is guaranteed to meet all your entertainment needs.</h5>
+            <div class="modal-footer">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- history Modal -->
+    <div class="modal fade" id="historyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h5 class="modal-title" id="myModalLabel" align="center"><b>Previous Purchases</b></h4>
+         </div>
+          <div class="modal-body">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-3">
+                <h6><b>Order date</b></h6>
+              </div> 
+              <div class="col-md-3">
+                <h6><b>Order total ($)</b></h6>
+              </div> 
+            </div>
+          {% for entry in history %}
+            <div class="row">
+              <div class="col-md-3">
+                {{entry.TransactionTime}}
+              </div> 
+              <div class="col-md-3">
+                {{entry.TransactionAmount}}
+              </div> 
+            </div>
+          {% endfor %}
+          </div>
+            <div class="modal-footer">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h5 class="modal-title" id="myModalLabel" align="center"><b>Checkout</b></h4>
+         </div>
+          <div class="modal-body">
+                <form action="{{ url_for('payment') }}" method="POST" id="payment-form">
+                  <h5 align="center" id="warningMessage"><span class="payment-errors"></span></h4>
+                  <br>
+                  <div class="row">
+                    <div class="col-md-6">
+                        <div class="simpleCart_items"></div>
+                    </div>
+                    <div class="col-md-6">
+                      <img src="static/images/credit_card.jpg" height="250" width="375">
+                      <br><br>
+                      <div class="form-row">
+                          <label>
+                            <span>Card Number</span>
+                            <input type="text" size="20" data-stripe="number" required="" placeholder=" **** **** **** ****">
+                          </label>
+                        </div>
+
+                        <div class="form-row">
+                          <label>
+                            <span>Expiration (MM/YY)</span>
+                            <input type="text" size="2" data-stripe="exp_month" required="" placeholder=" **">
+                          </label>
+                          <span> / </span>
+                          <input type="text" size="2" data-stripe="exp_year" required="" placeholder=" **">
+                        </div>
+
+                        <div class="form-row">
+                          <label>
+                            <span>CVC</span>
+                            <input type="text" size="4" data-stripe="cvc" required="" placeholder=" ***">
+                          </label>
+                        </div>
+
+                        <div class="form-row">
+                          <label>
+                              <span>ZIP</span>
+                              <input id="zip" size="5" type="text" name="address_zip" data-stripe="address_zip" required="" placeholder=" *****">
+                            </label>
+                        </div>
+                    </div>
+                  </div>
+                  <h4><div class="simpleCart_total"></div></h4>
+                  <br>
+                  <div align="center">
+                    <input type="submit" class="submit btn btn-success" value="Submit Payment">&nbsp;
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel Payment</button>
+                  </div>
+                  <input type="hidden" id="jwtToken" name="jwtToken" value={{token}}>
+                  <input type="hidden" id="stripeEmail" name="stripeEmail" value={{email}}>
+                </form>
+            <div class="modal-footer">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+     <!-- ###################### -->
+     <br>
+
+     <div id="moviecontainer">
+        <div class="row" align="center">
+          <div class="col-md-3">
+            <img src="static/images/fight_club.jpg" class="img-responsive" alt="fightclub" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> Fight Club </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$12.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <img src="static/images/die_hard.jpg" class="img-responsive" alt="diehard" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> Die Hard </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$9.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <img src="static/images/shooter.jpg" class="img-responsive" alt="shooter" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> Shooter </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$10.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <img src="static/images/pulp_fiction.jpg" class="img-responsive" alt="pulpfiction" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> Pulp Fiction </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$12.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="row" align="center">
+          <div class="col-md-3">
+            <img src="static/images/braveheart.jpg" class="img-responsive" alt="braveheart" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> Braveheart </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$9.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <img src="static/images/the_godfather.jpg" class="img-responsive" alt="thegodfather" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> The Godfather </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$9.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <img src="static/images/the_matrix.jpg" class="img-responsive" alt="thematrix" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> The Matrix </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$8.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <img src="static/images/tropic_thunder.jpg" class="img-responsive" alt="tropicthunder" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> Tropic Thunder </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$8.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="row" align="center">
+          <div class="col-md-3">
+            <img src="static/images/dark_knight.jpg" class="img-responsive" alt="darkknight" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> The Dark Knight </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$14.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <img src="static/images/gladiator.jpg" class="img-responsive" alt="gladiator" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> Gladiator </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$12.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <img src="static/images/inception.jpg" class="img-responsive" alt="inception" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> Inception </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$13.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <img src="static/images/i_am_legend.jpg" class="img-responsive" alt="iamlegend" height="300" width="200">
+            <div class="simpleCart_shelfItem">
+              <h4 class="item_name"> I Am Legend </h4>
+            <p>  <input type="hidden" value="1" class="item_Quantity">
+              <span class="item_price">$12.99</span><br>
+              <a class="item_add" href="javascript:;"> Add to Cart </a></p>
+            </div>
+          </div>
+        </div>
+     </div>
+
+    <script src="static/js/simpleCart.js"></script>
+    <script src="https://use.fontawesome.com/37b4cff8f4.js"></script>
+
+  </body>
+</html>

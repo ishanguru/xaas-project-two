@@ -1,0 +1,78 @@
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    
+    <title>seekaDVD</title>
+
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/signin.css" rel="stylesheet">
+    <link href="../static/css/style.css" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="../static/js/login.js"></script>
+  
+  </head>
+
+  <body>
+
+    <div class="container">
+        <div id="titlefont">SEEKAdvd</div>
+        <div id="catchphrasefont">Please sign in or register to gain access to this marketplace.</div>
+        <br>
+    </div>
+
+    <div class="container">
+
+      <form method="POST" action="{{ url_for('login') }}" class="form-signin" id="login-form">
+        <!-- <h2 class="form-signin-heading">Please sign in.</h2> -->
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" name="inputEmail" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" name="inputPassword" id="inputPassword" class="form-control" placeholder="Password" required="">
+        <div class="checkbox">
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-4">
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-lg btn-primary btn-block" type="submit" id="signin">Sign in</button>
+            </div>
+            <div class="col-md-4">
+            </div>
+        </div>
+      </form>
+
+      <span id="registerbutton"><h5 id="catchphrasefont">First time? Register <a onclick="buttonClicked()">here</a></h5></span>
+
+      <form method="POST" action="{{ url_for('register') }}" class="form-signin" id="register-form" hidden="true">
+        <!-- <h2 class="form-signin-heading">Please sign in.</h2> -->
+        <label for="inputFName" class="sr-only">First Name</label>
+        <input type="text" name="inputFName" id="inputFName" class="form-control" placeholder="First Name" required="" autofocus="">
+        <label for="inputLName" class="sr-only">Last Name</label>
+        <input type="text" name="inputLName" id="inputLName" class="form-control" placeholder="Last Name" required="" autofocus="">
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" name="inputEmail" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" name="inputPassword" id="inputPassword" class="form-control" placeholder="Password" required="">
+        <div class="checkbox">
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-lg btn-success btn-block" type="submit" id="register">Register</button>
+            </div>
+            <div class="col-md-3">
+            </div>
+        </div>
+      </form>
+
+      <span id="signinbutton" hidden=""><h5 id="catchphrasefont">Not your first time? Sign in <a onclick="button2Clicked()">here</a></h5></span>
+
+    </div>
+
+</body></html>
