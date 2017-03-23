@@ -6,7 +6,7 @@ Brennan Wallace (bgw2119)
 Jonathan Conor Voss (jcv2130)
 James Young (jty2106)
 
-SEEKAdvd - why rent when you can buy?
+ProgrammingBooks
 
 Orchestrator handles communication between the UI and services. 
 
