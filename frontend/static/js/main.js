@@ -73,9 +73,10 @@ function InactivityTimer(delay) {
 }
 
 function login(formData) {
+    formData["method"] = "login";
     $.ajax({
         type: "POST",
-        url: '/auth',
+        url: 'https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/orchestratorV2/ui-api',
         data: JSON.stringify(formData),
         dataType : "json",
         contentType: "application/json; charset=utf-8",
@@ -95,10 +96,11 @@ function login(formData) {
 }
 
 function signUp(formData) { //new acccount
+    formData["method"] = "signUp";
     $.ajax({
         type: "POST",
-        url: '/signUp',
-        data: formData,
+        url: 'https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/orchestratorV2/ui-api',
+        data: JSON.stringify(formData),
         success: function(data) {
             $('#signUpModal').modal('hide')
             delete formData["passwordCheck"];
@@ -117,11 +119,12 @@ var handler1 = StripeCheckout.configure({
   locale: 'auto',
   token: function(token) {
       token["amount"] = 1597;
+      token["method"] = "charge";
     $.ajax({
             type: "POST",
-            url: "/charge",
+            url: "https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/orchestratorV2/ui-api",
             headers: { "Authorization" : "JWT " + jwt_token },
-            data: token,
+            data: JSON.stringify(token),
             success: function(data) {
                 alert("Purchase successful for " + data["amount"] + " cents.");
             },
@@ -139,11 +142,12 @@ var handler2 = StripeCheckout.configure({
   locale: 'auto',
   token: function(token) {
     token["amount"] = 2098;
+    token["method"] = "charge";
     $.ajax({
             type: "POST",
-            url: "/charge",
+            url: "https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/orchestratorV2/ui-api",
             headers: { "Authorization" : "JWT " + jwt_token },
-            data: token,
+            data: JSON.stringify(token),
             success: function(data) {
                  alert("Purchase successful for " + data["amount"] + " cents.");
             },
