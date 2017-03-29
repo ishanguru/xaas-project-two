@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, jsonify,app, session
 import stripe
 import os
+import boto3
+from sqs_services import SQSServices
 # from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
 
@@ -18,9 +20,16 @@ application = Flask(__name__)
 
 application.debug = True
 application.config['SECRET_KEY'] = 'super-secret'
+
+#sqs
+try:
+    sqs_queue = SQSServices()
+except Exception as e:
+    print("Queue already exists")
         
+
 #stripe
-@application.route('/charge', methods=['POST'])
+@application.route('/payment', methods=['POST'])
 def charge():
     # Amount in cents
     amount = request.form["amount"]
@@ -42,7 +51,10 @@ def charge():
     result['status'] = charge['status']
     result['amount'] = charge['amount']
 
-    return jsonify(result)
+    queue_name = sqs_queue.getQueueName('paymentsQueue')
+    response = queue_name.send_message(jsonify(result))
+
+    return response
 
 # run the app.
 if __name__ == "__main__":
