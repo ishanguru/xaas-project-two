@@ -51,10 +51,20 @@ def charge():
     result['status'] = charge['status']
     result['amount'] = charge['amount']
 
-    queue_name = sqs_queue.getQueueName('paymentsQueue')
-    response = queue_name.send_message(jsonify(result))
+    transaction = jsonify(result)
 
-    return response
+    queue_name = sqs_queue.getQueueName('paymentsQueue')
+    response = queue_name.send_message(MessageBody=transaction, MessageAttributes={
+            'email': {
+                'StringValue': request.form['email'],
+                'DataType': 'String'
+            }    
+        })
+
+    # send order to user info microservice to store stuff into db
+    status = request.post('http://ENDPOINT' json=transaction)
+
+    return status
 
 # run the app.
 if __name__ == "__main__":
