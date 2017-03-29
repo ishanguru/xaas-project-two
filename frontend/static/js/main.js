@@ -30,8 +30,6 @@ processingDisplayHandler.clear = function () {
     this.processingDisplayElement.hide()
 };
 
-
-
 var processingHandler = {
     status : "clear",
     displayHandler : processingDisplayHandler,
@@ -41,7 +39,7 @@ processingHandler.updateStatus = function (status, msg) {
     this.status = status;
     this.displayHandler[this.status](msg);
 
-}
+};
 
 
 
@@ -74,45 +72,45 @@ accountDisplayHandler.logIn = function (userName) {
     this.loginNavElement.hide();
     this.logoutNavElement.show();
 }
-function InactivityTimer(delay) {
-
-  // private instance var
-  var timeout;
-
-  // private functions
-  function my_logout() {
-    console.log("inhere")
-    alert("you've been logged out");
-    accountDisplayHandler.logOut();
-  }
-
-  function reset() {
-    stop();
-    start();
-  }
-
-  function start() {
-    if (!timeout) {
-      timeout = setTimeout(my_logout, delay || 20000);
-    }
-  }
-
-  function stop() {
-    if (timeout) {
-      clearTimeout(timeout);
-      timeout = null;
-    }
-  }
-
-  // export public api
-  this.start = start;
-  this.stop  = stop;
-  this.reset = reset;
-
-  // init
-  document.addEventListener("mousemove", reset);
-  document.addEventListener("keypress",  reset);
-}
+// function InactivityTimer(delay) {
+//
+//   // private instance var
+//   var timeout;
+//
+//   // private functions
+//   function my_logout() {
+//     console.log("inhere")
+//     alert("you've been logged out");
+//     accountDisplayHandler.logOut();
+//   }
+//
+//   function reset() {
+//     stop();
+//     start();
+//   }
+//
+//   function start() {
+//     if (!timeout) {
+//       timeout = setTimeout(my_logout, delay || 20000);
+//     }
+//   }
+//
+//   function stop() {
+//     if (timeout) {
+//       clearTimeout(timeout);
+//       timeout = null;
+//     }
+//   }
+//
+//   // export public api
+//   this.start = start;
+//   this.stop  = stop;
+//   this.reset = reset;
+//
+//   // init
+//   document.addEventListener("mousemove", reset);
+//   document.addEventListener("keypress",  reset);
+// }
 
 function login(formData) {
     formData["method"] = "login";
@@ -126,10 +124,10 @@ function login(formData) {
             jwt_token = data.access_token;
             $('#loginModal').modal('hide');
             accountDisplayHandler.logIn(formData.username);
-            console.log('Time started')
-            var timer = new InactivityTimer(20000);
-            timer.stop();
-            timer.start();
+            // console.log('Time started')
+            // var timer = new InactivityTimer(20000);
+            // timer.stop();
+            // timer.start();
         },
         error: function (data) {
             alert("Login Failure")
