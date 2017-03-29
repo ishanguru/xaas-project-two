@@ -50,6 +50,7 @@ def charge():
     result = {}
     result['status'] = charge['status']
     result['amount'] = charge['amount']
+    result['email'] = request.form['email']
 
     transaction = jsonify(result)
 
