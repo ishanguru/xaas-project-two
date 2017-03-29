@@ -2,6 +2,10 @@
     accounts.js
     processing.js
  */
+
+
+
+
 function login(formData) {
     formData["method"] = "login";
     $.ajax({
@@ -14,10 +18,6 @@ function login(formData) {
             accountHandler.jwt_token = data.access_token;
             $('#loginModal').modal('hide');
             accountHandler.logIn(formData.username);
-            // console.log('Time started')
-            // var timer = new InactivityTimer(20000);
-            // timer.stop();
-            // timer.start();
         },
         error: function (data) {
             alert("Login Failure")
@@ -50,6 +50,7 @@ var handler1 = StripeCheckout.configure({
   token: function(token) {
       token["amount"] = 1597;
       token["method"] = "charge";
+      token["jwt"] = accountHandler.jwt_token;
     $.ajax({
             type: "POST",
             url: "https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/orchestratorV2/ui-api",
@@ -65,7 +66,6 @@ var handler1 = StripeCheckout.configure({
         });
   }
 });
-
 var handler2 = StripeCheckout.configure({
   key: 'pk_test_mLVxfSZ0XoplPi6EppPDVic9',
   image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
@@ -73,6 +73,7 @@ var handler2 = StripeCheckout.configure({
   token: function(token) {
     token["amount"] = 2098;
     token["method"] = "charge";
+    token["jwt"] = accountHandler.jwt_token;
     $.ajax({
             type: "POST",
             url: "https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/orchestratorV2/ui-api",
