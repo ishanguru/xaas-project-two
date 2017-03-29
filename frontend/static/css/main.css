@@ -1,0 +1,8 @@
+#processingDisplay {
+    display: none;
+
+}
+
+#processingDisplay h3 {
+        color: yellow;
+ }
