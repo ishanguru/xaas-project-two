@@ -2,8 +2,8 @@ import sys
 import pymongo
 from pymongo import MongoClient
 from flask_pymongo import PyMongo
-
 import email
+import jwt
 
 conn = MongoClient('mongodb://Gunnernet:nachiket_99@ds147069.mlab.com:47069/userdb')
 db = conn.userdb
@@ -26,41 +26,40 @@ def verificationemail():
 
 def lambda_handler(event, context):
 
-    def register():
-        print('registering user')
-        if request.method == 'POST':
-            try:
-                users = db.users
-                existing_user = users.find_one({'name' : request.form['username']})
-            except:
-                print ("failed to find user")
+    #def register():
+    print('registering user')
+    try:
+        users = db.users
+        existing_user = users.find_one({'name' : event['username']})
+    except:
+        print ("failed to find user")
 
-            if existing_user is None:
-                print('creating user')
-                hashpass = request.form['password']
-                users.insert({'name' : request.form['username'], 'password' : hashpass})
-                session['name'] = request.form['username']
-                #email = request.form['inputEmail']
+    #if existing_user is None:
+    print('creating user for', event['username'] )
+    hashpass = event['password']
+    users.insert({'name' : event['username'], 'password' : hashpass})
 
-                payload = {'iss': email, 'exp': 30000000000, 'admin': True}
+    #session['name'] = event['username']
+    #email = request.form['inputEmail']
 
-                token = jwt.encode(
-                payload,
-                application.config.get('SECRET_KEY'),
-                algorithm='HS256')
+    payload = {'iss': email, 'exp': 30000000000, 'admin': True}
 
-                tokentoken = token
+    # token = jwt.encode(
+    # payload, 'SECRET_KEY',
+    # algorithm='HS256')
+    #
+    # tokentoken = token
+    return " Successful Registration"
+            #userhistory = db.userhistory
+            #currentHistory = list(userhistory.find({"name" : email}))
 
-                #userhistory = db.userhistory
-                #currentHistory = list(userhistory.find({"name" : email}))
 
-
-            return 'That inputEmail already exists!'
+    return 'That inputEmail already exists!'
     #
 
+    #application.config.get('SECRET_KEY'),
 
 
 
-    return "Connection Successful with the database"
 
 #    return "Added %d items from RDS MySQL table" %(item_count)
