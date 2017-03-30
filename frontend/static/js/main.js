@@ -1,49 +1,8 @@
-/* load first
+/* load in order
     accounts.js
     processing.js
+    poll.js
  */
-
-
-function poll(count, type) {
-
-    function handleFailure(count, data) {
-        if (count <= 4) { //try again
-            var timeoutID = window.setTimeout(poll(count + 1), 200);
-        } else  {
-            //todo: probably want to send this info somewhere
-            processingHandler.updateStatus("failure", "That operation failed please try again.");
-        }
-    }
-
-
-    data["jwt"] = accountHandler.jwt_token;
-    data["type"] = type;
-
-    $.ajax({
-        type: "POST",
-        url: "tbd",
-        data: data,
-        contentType: "application/json; charset=utf-8",
-        success: function(data) {
-            if (data["status"] === "success") {
-                processingHandler.updateStatus("success", "That operation worked!");
-            } else {
-                handleFailure(count,data)
-            }
-        },
-        error: function (data) {
-            handleFailure(count,data)
-        }
-    });
-
-    if (true) {
-
-    } else if (count < 2) { //try again
-        var timeoutID = window.setTimeout(poll(count + 1), 200);
-    } else  {
-        processingHandler.updateStatus("failure", "That operation failed please try again.");
-    }
-}
 
 function login(formData) {
     formData["method"] = "login";
@@ -129,11 +88,23 @@ var handler2 = StripeCheckout.configure({
   }
 });
 
+function onGoingProcess() {
+    if (!(processingHandler.status == "success" ||
+              processingHandler.status == "clear")) {
+              alert("Wait for ongoing process!")
+        return true;
+        }
+    return false;
+}
+
 $(document).ready(function() {
     accountHandler.logOut();
 
     $('#loginForm').submit(function (e) {
         e.preventDefault();
+        if (onGoingProcess()) {
+            return;
+        }
         login($(this).serializeArray().reduce(
             function(accumulater, curr) {
                 accumulater[curr.name] = curr.value;
@@ -142,6 +113,9 @@ $(document).ready(function() {
     });
     $('#signUpForm').submit(function (e) {
         e.preventDefault();
+        if (onGoingProcess()) {
+            return;
+        }
         var formData = $(this).serializeArray().reduce(
             function(accumulater, curr) {
                 accumulater[curr.name] = curr.value;
@@ -160,6 +134,9 @@ $(document).ready(function() {
     
     document.getElementById('customButton1').addEventListener('click', function(e) {
       // Open Checkout with further options:
+          if (onGoingProcess()) {
+            return;
+          }
           if (accountHandler.jwt_token === null) {
               alert("You must be logged in to purchase something");
           } else {
@@ -174,9 +151,12 @@ $(document).ready(function() {
      
          document.getElementById('customButton2').addEventListener('click', function(e) {
       // Open Checkout with further options:
+          if (onGoingProcess()) {
+            return;
+          }
         if (accountHandler.jwt_token === null) {
               alert("You must be logged in to purchase something");
-          } else {
+          }  else {
               handler2.open({
                 name: 'Android Programming for Beginners',
                 description: '20.98',
