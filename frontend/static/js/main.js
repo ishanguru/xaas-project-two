@@ -36,13 +36,6 @@ function poll(count, type) {
         }
     });
 
-    if (true) {
-
-    } else if (count < 2) { //try again
-        var timeoutID = window.setTimeout(poll(count + 1), 200);
-    } else  {
-        processingHandler.updateStatus("failure", "That operation failed please try again.");
-    }
 }
 
 function login(formData) {
