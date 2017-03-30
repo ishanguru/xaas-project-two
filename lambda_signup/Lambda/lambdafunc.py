@@ -27,7 +27,7 @@ def verificationemail():
 conf = {
   "sqs-access-key": "AKIAJN3ACGV3J6SG3Q5A",
   "sqs-secret-key": "amepI5y7KFJ0PpjiC5TNiai7OFjcpnRH+39k6jqL",
-  "sqs-queue-name": "sample_queue1",
+  "sqs-queue-name": "queue_signup",
   "sqs-region": "us-east-1",
   "sqs-path": "sqssend"
 }
@@ -42,33 +42,25 @@ conn = boto.sqs.connect_to_region(
         aws_secret_access_key   = conf.get('sqs-secret-key')
 )
 
+q = conn.get_queue('queue_signup')
 
-q = conn.get_queue('sample_queue1')
-
-
-m = RawMessage()
-m.set_body('FALSE')
-retval = q.write(m)
-#q = conn.create_queue(conf.get('sqs-queue-name'))
 
 def lambda_handler(event, context):
 
     users = db.users
     existing_user = users.find_one({'name' : event['username']})
-
-
     if existing_user:
         m = RawMessage()
-        m.set_body('FALSE')
-        retval = conn.write(m)
+        m.set_body({'event['username']' : 'FALSE'})
+        q.write(m)
         return 'That inputEmail already exists!'
     else:
         print('creating user for', event['username'] )
         hashpass = event['password']
         users.insert({'name' : event['username'], 'password' : hashpass})
         m = RawMessage()
-        m.set_body('TRUE')
-        retval = conn.write(m)
+        m.set_body({'event['username']' : 'TRUE'})
+        q.write(m)
 
         return " Successful Registration"
             #userhistory = db.userhistory
