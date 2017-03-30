@@ -32,6 +32,7 @@ conf = {
   "sqs-path": "sqssend"
 }
 
+
 import boto.sqs
 from boto.sqs.message import RawMessage
 
@@ -42,7 +43,13 @@ conn = boto.sqs.connect_to_region(
 )
 
 
-q = conn.create_queue(conf.get('sqs-queue-name'))
+q = conn.get_queue('sample_queue1')
+
+
+m = RawMessage()
+m.set_body('FALSE')
+retval = q.write(m)
+#q = conn.create_queue(conf.get('sqs-queue-name'))
 
 def lambda_handler(event, context):
 
@@ -53,7 +60,7 @@ def lambda_handler(event, context):
     if existing_user:
         m = RawMessage()
         m.set_body('FALSE')
-        retval = q.write(m)
+        retval = conn.write(m)
         return 'That inputEmail already exists!'
     else:
         print('creating user for', event['username'] )
@@ -61,7 +68,7 @@ def lambda_handler(event, context):
         users.insert({'name' : event['username'], 'password' : hashpass})
         m = RawMessage()
         m.set_body('TRUE')
-        retval = q.write(m)
+        retval = conn.write(m)
 
         return " Successful Registration"
             #userhistory = db.userhistory
