@@ -1,3 +1,8 @@
+function startPoll(type) {
+    processingHandler.updateStatus("waiting",null);
+    poll(0,type);
+}
+
 function poll(count, type) {
 
     function handleFailure(count, data) {

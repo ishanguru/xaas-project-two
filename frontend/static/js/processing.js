@@ -3,7 +3,7 @@ var processingDisplayHandler = {
    processingDisplayElement: $("#processingDisplay")
 };
 
-processingDisplayHandler.waiting = function () {
+processingDisplayHandler.waiting = function (msg) {
     this.processingDisplayElement.text("Processing...");
     this.processingDisplayElement.css("color","yellow");
     this.processingDisplayElement.show();
@@ -35,3 +35,12 @@ processingHandler.updateStatus = function (status, msg) {
     this.displayHandler[this.status](msg);
 
 };
+
+function onGoingProcess() {
+    if (!(processingHandler.status == "success" ||
+        processingHandler.status == "clear")) {
+        alert("Wait for ongoing process!");
+        return true;
+    }
+    return false;
+}
