@@ -1,5 +1,6 @@
 function handleLogin(formData) {
     formData["method"] = "login";
+    $('#loginModal').modal('hide');
     $.ajax({
         type: "POST",
         url: 'https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/orchestratorV2/ui-api',
@@ -7,9 +8,11 @@ function handleLogin(formData) {
         dataType : "json",
         contentType: "application/json; charset=utf-8",
         success: function(data) {
-            accountHandler.jwt_token = data.access_token;
-            $('#loginModal').modal('hide');
-            accountHandler.logIn(formData.username);
+          var info = {
+            username: formData.username,
+            password: formData.password
+          };
+          startPollLogin(info)
         },
         error: function (data) {
             alert("Login Failure")
@@ -19,14 +22,17 @@ function handleLogin(formData) {
 
 function handleSignup(formData) { //new acccount
     formData["method"] = "signup";
+    $('#signUpModal').modal('hide')
     $.ajax({
         type: "POST",
         url: 'https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/orchestratorV2/ui-api',
         data: JSON.stringify(formData),
         success: function(data) {
-            $('#signUpModal').modal('hide')
-            delete formData["passwordCheck"];
-            login(formData);
+          var info = {
+            username: formData.username,
+            password: formData.password
+          };
+          startPollSignup(info);
         },
         error: function (data) {
             alert("Could not sign up. Username may be taken.");
@@ -76,7 +82,7 @@ class ItemHandler {
                     headers: {"Authorization": "JWT " + this.accountHandler.jwt_token},
                     data: JSON.stringify(Object.assign(token, {"jwt": this.accountHandler.jwt_token})),
                     success: function (data) {
-                        startPoll("charge");
+                        startPollCharge();
                     },
                     error: function (data) {
                         alert("You must be logged in!");
