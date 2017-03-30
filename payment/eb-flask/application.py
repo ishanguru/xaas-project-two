@@ -5,6 +5,8 @@ import boto3
 from sqs_services import SQSServices
 # from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
+import json
+import requests
 
 stripe_keys = {
   'secret_key': 'sk_test_Hrqp4whe1ZsCTyLzol7jth8v',
@@ -26,7 +28,28 @@ try:
     sqs_queue = SQSServices()
 except Exception as e:
     print("Queue already exists")
-        
+
+@application.route('/sns', methods = ['GET', 'POST', 'PUT'])
+def snsFunction():
+    try:
+        notification = json.loads(request.data)
+    except:
+        print("Unable to load request")
+        pass
+
+    
+    headers = request.headers.get('X-Amz-Sns-Message-Type')
+    # print(notification)
+
+    if headers == 'SubscriptionConfirmation' and 'SubscribeURL' in notification:
+        url = requests.get(notification['SubscribeURL'])
+        # print(url) 
+    elif headers == 'Notification':
+        charge(notification)
+    else: 
+        print("Headers not specified")
+
+    return "SNS Notification Recieved\n"  
 
 #stripe
 @application.route('/payment', methods=['POST'])
@@ -65,7 +88,8 @@ def charge():
     # send order to user info microservice to store stuff into db
     # status = request.post('http://ENDPOINT' json=transaction)
 
-    return status
+    return "COOL STUFF BRO"
+    # return status
 
 # run the app.
 if __name__ == "__main__":
