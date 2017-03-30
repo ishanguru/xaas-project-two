@@ -7,11 +7,7 @@ connectdb = MongoClient('mongodb://Gunnernet:nachiket_99@ds147069.mlab.com:47069
 db = connectdb.userdb
 
 conf = {
-  "sqs-access-key": "AKIAJN3ACGV3J6SG3Q5A",
-  "sqs-secret-key": "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",
-  "sqs-queue-name": "queue_login",
-  "sqs-region": "us-east-1",
-  "sqs-path": "sqssend"
+
 }
 
 import boto.sqs

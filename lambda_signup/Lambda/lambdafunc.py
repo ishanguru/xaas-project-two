@@ -9,11 +9,7 @@ import jwt
 connectdb = MongoClient('mongodb://Gunnernet:nachiket_99@ds147069.mlab.com:47069/userdb')
 db = connectdb.userdb
 
-## Configuration for the Amazon SES service
-EMAIL_HOST = 'email-smtp.us-east-1.amazonaws.com'
-EMAIL_HOST_USER = 'AKIAJZRYVG2CUXLHPR6A'
-EMAIL_HOST_PASSWORD = 'AjkRZ0Cav+/iNKubL+yfCpudvr2NA/YkRZ4myZ4eU6qB'
-EMAIL_PORT = 587
+
 
 
 def verificationemail():
@@ -25,11 +21,7 @@ def verificationemail():
 
 ## Set up existing AWS SQS
 conf = {
-  "sqs-access-key": "AKIAJN3ACGV3J6SG3Q5A",
-  "sqs-secret-key": "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",
-  "sqs-queue-name": "queue_signup",
-  "sqs-region": "us-east-1",
-  "sqs-path": "sqssend"
+
 }
 
 
