@@ -3,13 +3,26 @@ import pymongo
 from pymongo import MongoClient
 from flask_pymongo import PyMongo
 
-conn = MongoClient('mongodb://Gunnernet:nachiket_99@ds147069.mlab.com:47069/userdb')
-db = conn.userdb
+connectdb = MongoClient('mongodb://Gunnernet:nachiket_99@ds147069.mlab.com:47069/userdb')
+db = connectdb.userdb
 
+conf = {
+
+}
+
+import boto.sqs
+from boto.sqs.message import RawMessage
+
+conn = boto.sqs.connect_to_region(
+        conf.get('sqs-region'),
+        aws_access_key_id   = conf.get('sqs-access-key'),
+        aws_secret_access_key   = conf.get('sqs-secret-key')
+)
+
+q = conn.get_queue('queue_login')
 
 
 def lambda_handler(event, context):
-
 
     users = db.users
     login_user = users.find_one({'name' : event['username']})
@@ -22,6 +35,12 @@ def lambda_handler(event, context):
     if login_user:
         if event['username'] == login_user['name'] :
             if event['password'] == login_user['password']:
+                m = RawMessage()
+                m.set_body({'event['username']' : 'TRUE'})
+                q.write(m)
                 return "Successful login"
 
+    m = RawMessage()
+    m.set_body({'event['username']' : 'FALSE'})
+    q.write(m)
     return "Invalid Username/Password"
