@@ -9,18 +9,29 @@ import jwt
 connectdb = MongoClient('mongodb://Gunnernet:nachiket_99@ds147069.mlab.com:47069/userdb')
 db = connectdb.userdb
 
+import boto.ses
 
 
+verificationconn = boto.ses.connect_to_region(
+        'us-east-1',
+        aws_access_key_id='AKIAJN3ACGV3J6SG3Q5A',
+        aws_secret_access_key='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')
 
-def verificationemail():
-    s = smtplib.SMTP(EMAIL_HOST, EMAIL_PORT)
-    s.starttls()
-    s.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
-    s.sendmail(me, you, msg.as_string())
-    s.quit()
+verificationconn.verify_email_address('nachi.2605@gmail.com')
+print (verificationconn)
+
+# s = smtplib.SMTP(EMAIL_HOST, EMAIL_PORT)
+# s.starttls()
+# s.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
+# s.sendmail(me, you, msg.as_string())
+# s.quit()
 
 ## Set up existing AWS SQS
-conf = {
+conf = { "sqs-access-key": "AKIAJN3ACGV3J6SG3Q5A",
+"sqs-secret-key": "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",
+"sqs-queue-name": "queue_login",
+"sqs-region": "us-east-1",
+"sqs-path": "sqssend"
 
 }
 
@@ -43,7 +54,7 @@ def lambda_handler(event, context):
     existing_user = users.find_one({'name' : event['username']})
     if existing_user:
         m = RawMessage()
-        m.set_body({'event['username']' : 'FALSE'})
+        m.set_body({ event['username'] : 'FALSE'})
         q.write(m)
         return 'That inputEmail already exists!'
     else:
@@ -51,7 +62,7 @@ def lambda_handler(event, context):
         hashpass = event['password']
         users.insert({'name' : event['username'], 'password' : hashpass})
         m = RawMessage()
-        m.set_body({'event['username']' : 'TRUE'})
+        m.set_body({ event['username'] : 'TRUE'})
         q.write(m)
 
         return " Successful Registration"
