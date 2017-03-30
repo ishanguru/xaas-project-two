@@ -5,6 +5,8 @@ import boto3
 from sqs_services import SQSServices
 # from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
+import json
+import requests
 
 stripe_keys = {
   'secret_key': 'sk_test_Hrqp4whe1ZsCTyLzol7jth8v',
@@ -26,18 +28,39 @@ try:
     sqs_queue = SQSServices()
 except Exception as e:
     print("Queue already exists")
-        
+
+@application.route('/sns', methods = ['GET', 'POST', 'PUT'])
+def snsFunction():
+    try:
+        notification = json.loads(request.data)
+    except:
+        print("Unable to load request")
+        pass
+
+    
+    headers = request.headers.get('X-Amz-Sns-Message-Type')
+    # print(notification)
+
+    if headers == 'SubscriptionConfirmation' and 'SubscribeURL' in notification:
+        url = requests.get(notification['SubscribeURL'])
+        # print(url) 
+    elif headers == 'Notification':
+        charge(notification)
+    else: 
+        print("Headers not specified")
+
+    return "SNS Notification Recieved\n"  
 
 #stripe
 @application.route('/payment', methods=['POST'])
-def charge():
+def charge(notification):
     # Amount in cents
-    amount = request.form["amount"]
-    print request.form
+    amount = notification["amount"]
+    print notification
 
     customer = stripe.Customer.create(
-        email=request.form['email'],
-        source=request.form['id']
+        email=notification['email'],
+        source=notification['id']
     )
 
     charge = stripe.Charge.create(
@@ -50,14 +73,14 @@ def charge():
     result = {}
     result['status'] = charge['status']
     result['amount'] = charge['amount']
-    result['email'] = request.form['email']
+    result['email'] = notification['email']
 
     transaction = jsonify(result)
 
     queue_name = sqs_queue.getQueueName('paymentsQueue')
     response = queue_name.send_message(MessageBody=transaction, MessageAttributes={
             'email': {
-                'StringValue': request.form['email'],
+                'StringValue': notification['email'],
                 'DataType': 'String'
             }    
         })
@@ -65,7 +88,8 @@ def charge():
     # send order to user info microservice to store stuff into db
     # status = request.post('http://ENDPOINT' json=transaction)
 
-    return status
+    return "COOL STUFF BRO"
+    # return status
 
 # run the app.
 if __name__ == "__main__":

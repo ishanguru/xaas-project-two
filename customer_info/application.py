@@ -32,14 +32,15 @@ def after_request(response):
 @application.route('/order', methods=['POST', 'GET'])
 def payment():
 
-    currentUser = request.form['stripeEmail']
-
-    cartTotal = float(request.form['cartTotal'])
+    currentUser = request.form['email']
+    total = float(request.form['amount'])
 
     userhistory = mongo.db.userhistory
     now = str(datetime.date(datetime.now()))
 
-    userhistory.insert_one({"name": currentUser, "TransactionAmount": cartTotal, "TransactionTime": now})
+    userhistory.insert_one({"name": currentUser, "TransactionAmount": total, "TransactionTime": now})
+
+    return True
 
 if __name__ == '__main__':
     application.run(debug=True, host='0.0.0.0')
