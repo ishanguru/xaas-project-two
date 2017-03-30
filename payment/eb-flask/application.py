@@ -53,14 +53,14 @@ def snsFunction():
 
 #stripe
 @application.route('/payment', methods=['POST'])
-def charge():
+def charge(notification):
     # Amount in cents
-    amount = request.form["amount"]
-    print request.form
+    amount = notification["amount"]
+    print notification
 
     customer = stripe.Customer.create(
-        email=request.form['email'],
-        source=request.form['id']
+        email=notification['email'],
+        source=notification['id']
     )
 
     charge = stripe.Charge.create(
@@ -73,14 +73,14 @@ def charge():
     result = {}
     result['status'] = charge['status']
     result['amount'] = charge['amount']
-    result['email'] = request.form['email']
+    result['email'] = notification['email']
 
     transaction = jsonify(result)
 
     queue_name = sqs_queue.getQueueName('paymentsQueue')
     response = queue_name.send_message(MessageBody=transaction, MessageAttributes={
             'email': {
-                'StringValue': request.form['email'],
+                'StringValue': notification['email'],
                 'DataType': 'String'
             }    
         })
