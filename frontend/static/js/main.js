@@ -122,11 +122,23 @@ var handler2 = StripeCheckout.configure({
   }
 });
 
+function onGoingProcess() {
+    if (!(processingHandler.status == "success" ||
+              processingHandler.status == "clear")) {
+              alert("Wait for ongoing process!")
+        return true;
+        }
+    return false;
+}
+
 $(document).ready(function() {
     accountHandler.logOut();
 
     $('#loginForm').submit(function (e) {
         e.preventDefault();
+        if (onGoingProcess()) {
+            return;
+        }
         login($(this).serializeArray().reduce(
             function(accumulater, curr) {
                 accumulater[curr.name] = curr.value;
@@ -135,6 +147,9 @@ $(document).ready(function() {
     });
     $('#signUpForm').submit(function (e) {
         e.preventDefault();
+        if (onGoingProcess()) {
+            return;
+        }
         var formData = $(this).serializeArray().reduce(
             function(accumulater, curr) {
                 accumulater[curr.name] = curr.value;
@@ -153,6 +168,9 @@ $(document).ready(function() {
     
     document.getElementById('customButton1').addEventListener('click', function(e) {
       // Open Checkout with further options:
+          if (onGoingProcess()) {
+            return;
+          }
           if (accountHandler.jwt_token === null) {
               alert("You must be logged in to purchase something");
           } else {
@@ -167,9 +185,12 @@ $(document).ready(function() {
      
          document.getElementById('customButton2').addEventListener('click', function(e) {
       // Open Checkout with further options:
+          if (onGoingProcess()) {
+            return;
+          }
         if (accountHandler.jwt_token === null) {
               alert("You must be logged in to purchase something");
-          } else {
+          }  else {
               handler2.open({
                 name: 'Android Programming for Beginners',
                 description: '20.98',
