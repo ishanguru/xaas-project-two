@@ -19,8 +19,11 @@ def lambda_handler(event, context):
         response = sns_client.publish(TopicArn='arn:aws:sns:us-east-1:648812771825:signup', Message=json.dumps(event))
         return said
     elif method == "charge":
+        connectdb = MongoClient('mongodb://Gunnernet:nachiket_99@ds147069.mlab.com:47069/chargedb')
+        caid = connectdb.signupAttempts.insert({"status": "undefined"});
+        event["caid"] = caid
         response = sns_client.publish(TopicArn='arn:aws:sns:us-east-1:648812771825:payments', Message=json.dumps(event))
-        return "charge"
+        return caid
     else:
         return "not supported"
     return str(event)
