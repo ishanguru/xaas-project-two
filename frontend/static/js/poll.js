@@ -29,7 +29,7 @@ function pollCharge(count) {
 
     $.ajax({
         type: "POST",
-        url: "tbd",
+        url: "https://b98im1pkw9.execute-api.us-east-1.amazonaws.com/prod/checkqueue",
         data: data,
         contentType: "application/json; charset=utf-8",
         success: function(data) {
@@ -60,7 +60,7 @@ function pollLogin(count, info) {
 
     $.ajax({
         type: "POST",
-        url: "tbd",
+        url: "https://b98im1pkw9.execute-api.us-east-1.amazonaws.com/prod/checkqueue",
         data: info,
         contentType: "application/json; charset=utf-8",
         success: function(data) {
@@ -91,7 +91,7 @@ function pollSignup(count, info) {
 
     $.ajax({
         type: "POST",
-        url: "tbd",
+        url: "https://b98im1pkw9.execute-api.us-east-1.amazonaws.com/prod/checkqueue",
         data: info,
         contentType: "application/json; charset=utf-8",
         success: function(data) {
