@@ -28,7 +28,7 @@ function handleSignup(formData) { //new acccount
         type: "POST",
         url: 'https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/orchestratorV2/ui-api',
         data: JSON.stringify(Object.assign(formData,{"username" : formData["Email"],
-            "method" : "login"})),
+            "method" : "signup"})),
         success: function(data) {
           var info = {
             username: formData.username,
