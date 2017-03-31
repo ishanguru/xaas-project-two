@@ -25,7 +25,7 @@ function pollCharge(count) {
     }
     var data = {};
     data["jwt"] = accountHandler.jwt_token;
-    data["type"] = type;
+    data["type"] = "charge";
 
     $.ajax({
         type: "POST",
