@@ -9,11 +9,28 @@
 $(document).ready(function() {
     accountHandler.logOut();
 
+    var handlerForItem1 = new ItemHandler(1597,
+        "Unity 5.x Cookbook",
+        "1597",
+        accountHandler,
+        'customButton1',
+        processingHandler
+    );
+
+    var handlerForItem2 = new ItemHandler(2098,
+        "Android Programming for Beginners",
+        "20.98",
+        accountHandler,
+        'customButton2',
+        processingHandler
+    );
+
+
     $('#loginForm').submit(function (e) {
         e.preventDefault();
-        if (onGoingProcess()) {
+          if (processingHandler.checkForOnGoingProcessWithWarning()) {
             return;
-        }
+          }
         handleLogin($(this).serializeArray().reduce(
             function(accumulater, curr) {
                 accumulater[curr.name] = curr.value;
@@ -23,9 +40,9 @@ $(document).ready(function() {
     });
     $('#signUpForm').submit(function (e) {
         e.preventDefault();
-        if (onGoingProcess()) {
+          if (processingHandler.checkForOnGoingProcessWithWarning()) {
             return;
-        }
+          }
         var formData = $(this).serializeArray().reduce(
             function(accumulater, curr) {
                 accumulater[curr.name] = curr.value;
@@ -41,32 +58,6 @@ $(document).ready(function() {
         }
         handleSignup(formData);
     });
-    
-    document.getElementById('customButton1').addEventListener('click', function(e) {
-      // Open Checkout with further options:
-          if (onGoingProcess()) {
-            return;
-          }
-          if (accountHandler.jwt_token === null) {
-              alert("You must be logged in to purchase something");
-          } else {
-              handlerForItem1.checkOut();
-          }
-          e.preventDefault();
-     });
-     
-     document.getElementById('customButton2').addEventListener('click', function(e) {
-      // Open Checkout with further options:
-          if (onGoingProcess()) {
-            return;
-          }
-        if (accountHandler.jwt_token === null) {
-              alert("You must be logged in to purchase something");
-          }  else {
-              handlerForItem2.checkOut();
-          }
-          e.preventDefault();
-     });
 
     // Close Checkout on page navigation:
     window.addEventListener('popstate', function() {

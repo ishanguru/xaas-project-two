@@ -1,53 +1,27 @@
-function handleLogin(formData) {
-    formData["method"] = "login";
-    $('#loginModal').modal('hide');
-    $.ajax({
-        type: "POST",
-        url: 'https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/orchestratorV2/ui-api',
-        data: JSON.stringify(formData),
-        dataType : "json",
-        contentType: "application/json; charset=utf-8",
-        success: function(data) {
-          var info = {
-            username: formData.username,
-            password: formData.password
-          };
-          startPollLogin(info)
-        },
-        error: function (data) {
-            alert("Login Failure")
-        }
-    });
-}
-
-function handleSignup(formData) { //new acccount
-    formData["method"] = "signup";
-    $('#signUpModal').modal('hide')
-    $.ajax({
-        type: "POST",
-        url: 'https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/orchestratorV2/ui-api',
-        data: JSON.stringify(formData),
-        success: function(data) {
-          var info = {
-            username: formData.username,
-            password: formData.password
-          };
-          startPollSignup(info);
-        },
-        error: function (data) {
-            alert("Could not sign up. Username may be taken.");
-        }
-    });
-}
-
 class ItemHandler {
-    constructor(amount, name, description, accountHandler) {
+    constructor(amount, name, description, accountHandler, elementId, processingHandler) {
         this.amount = amount;
         this.name = name;
         this.description = description;
         this.accountHandler = accountHandler;
+        this.elementId = elementId;
+        this.processingHandler = processingHandler;
         this.checkOutHandler =
             this.checkOutHandlerDefaultConfigFactory(this.amount);
+        var that = this;
+        document.getElementById(this.elementId).addEventListener('click', function(e) {
+            // Open Checkout with further options:
+            e.preventDefault();
+            if (processingHandler.checkForOnGoingProcessWithWarning()) {
+                return;
+            }
+
+            if (accountHandler.jwt_token === null) {
+              alert("You must be logged in to purchase something");
+            }  else {
+                  that.checkOut();
+            }
+         });
     }
 
     close() {
@@ -70,6 +44,7 @@ class ItemHandler {
     }
 
      checkOutHandlerFactory(configAttributes, tokenItems) {
+        var that = this;
         return StripeCheckout.configure({
             key: configAttributes["key"],
             image: configAttributes["image"],
@@ -79,8 +54,8 @@ class ItemHandler {
                 $.ajax({
                     type: "POST",
                     url: "https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/orchestratorV2/ui-api",
-                    headers: {"Authorization": "JWT " + this.accountHandler.jwt_token},
-                    data: JSON.stringify(Object.assign(token, {"jwt": this.accountHandler.jwt_token})),
+                    headers: {"Authorization": "JWT " + that.accountHandler.jwt_token},
+                    data: JSON.stringify(Object.assign(token, {"jwt": that.accountHandler.jwt_token})),
                     success: function (data) {
                         startPollCharge();
                     },
@@ -103,6 +78,3 @@ class ItemHandler {
         });
     }
 }
-
-var handlerForItem1 = new ItemHandler(1597, "Unity 5.x Cookbook", "1597", accountHandler);
-var handlerForItem2 = new ItemHandler(2098, "Android Programming for Beginners", "20.98", accountHandler);

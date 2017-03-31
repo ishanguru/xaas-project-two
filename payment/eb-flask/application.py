@@ -86,10 +86,10 @@ def charge(notification):
         })
 
     # send order to user info microservice to store stuff into db
-    # status = request.post('http://ENDPOINT' json=transaction)
+    status = request.post('https://ec2-52-15-159-218.us-east-2.compute.amazonaws.com:5000/order', json=transaction)
 
-    return "COOL STUFF BRO"
-    # return status
+    # return "COOL STUFF BRO"
+    return status
 
 # run the app.
 if __name__ == "__main__":
@@ -99,4 +99,5 @@ if __name__ == "__main__":
     port = int(os.getenv('PORT', 8080)) 
     host = os.getenv('IP', '0.0.0.0')
     application.run(port=port, host=host)
+
 

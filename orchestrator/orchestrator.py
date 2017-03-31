@@ -6,11 +6,11 @@ def lambda_handler(event, context):
     method = event["method"]
     sns_client = boto3.client('sns')
     if method == "login":
-    	response = sns_client.publish(TopicArn='arn:aws:sns:us-east-1:648812771825:accounts', Message=json.dumps(event))
+    	response = sns_client.publish(TopicArn='arn:aws:sns:us-east-1:648812771825:login', Message=json.dumps(event))
         return "login"
     elif method == "signup":
-    	response = sns_client.publish(TopicArn='arn:aws:sns:us-east-1:648812771825:accounts', Message=json.dumps(event))
-        return "sign up"
+    	response = sns_client.publish(TopicArn='arn:aws:sns:us-east-1:648812771825:signup', Message=json.dumps(event))
+        return "signup"
     elif method == "charge":
     	response = sns_client.publish(TopicArn='arn:aws:sns:us-east-1:648812771825:payments', Message=json.dumps(event))
         return "charge"

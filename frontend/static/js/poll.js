@@ -17,15 +17,15 @@ function pollCharge(count) {
 
     function handleFailure(count, data) {
         if (count <= 4) { //try again
-            var timeoutID = window.setTimeout(pollCharge(count + 1), 200);
+            var timeoutID = window.setTimeout(pollCharge(count + 1, info), 200);
         } else  {
             //todo: probably want to send this info somewhere
-            processingHandler.updateStatus("failure", "That operation failed please try again.");
+            processingHandler.updateStatus("error", "That operation failed please try again.");
         }
     }
-
+    var data = {};
     data["jwt"] = accountHandler.jwt_token;
-    data["type"] = type;
+    data["type"] = "charge";
 
     $.ajax({
         type: "POST",
@@ -46,14 +46,15 @@ function pollCharge(count) {
 }
 
 function pollLogin(count, info) {
+    console.log(info);
     info["type"] = "login";
 
     function handleFailure(count, data) {
         if (count <= 4) { //try again
-            var timeoutID = window.setTimeout(pollLogin(count + 1), 200);
+            var timeoutID = window.setTimeout(pollLogin(count + 1, info), 200);
         } else  {
             //todo: probably want to send this info somewhere
-            processingHandler.updateStatus("failure", "That operation failed please try again.");
+            processingHandler.updateStatus("error", "That operation failed please try again.");
         }
     }
 
@@ -81,10 +82,10 @@ function pollSignup(count, info) {
 
     function handleFailure(count, data) {
         if (count <= 4) { //try again
-            var timeoutID = window.setTimeout(pollSignup(count + 1), 200);
+            var timeoutID = window.setTimeout(pollSignup(count + 1, info), 200);
         } else  {
             //todo: probably want to send this info somewhere
-            processingHandler.updateStatus("failure", "That operation failed please try again.");
+            processingHandler.updateStatus("error", "That operation failed please try again.");
         }
     }
 
