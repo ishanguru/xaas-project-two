@@ -23,7 +23,7 @@ function pollCharge(count) {
             processingHandler.updateStatus("failure", "That operation failed please try again.");
         }
     }
-
+    var data = {};
     data["jwt"] = accountHandler.jwt_token;
     data["type"] = type;
 
