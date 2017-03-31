@@ -27,8 +27,8 @@ function handleSignup(formData) { //new acccount
     $.ajax({
         type: "POST",
         url: 'https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/orchestratorV2/ui-api',
-        data: JSON.stringify(JSON.stringify(Object.assign(formData,{"username" : formData["Email"],
-            "method" : "login"}))),
+        data: JSON.stringify(Object.assign(formData,{"username" : formData["Email"],
+            "method" : "login"})),
         success: function(data) {
           var info = {
             username: formData.username,
