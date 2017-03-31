@@ -48,11 +48,11 @@ def lambda_handler(event, context):
                     for b in a.values():
                         for email in b.values():
                             for i in email:
-                                if (i == event['username']):                
+                                if (i == event['username']):
                                     m = RawMessage()
                                     m.set_body({event['username'] : 'TRUE'})
                                     q.write(m)
-                                    email = verifiedemails.find_one({'VerifiedEmailAddresses': event['username']})
+                        
                                     return "Successful login"
 
     m = RawMessage()
