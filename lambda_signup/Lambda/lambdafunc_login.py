@@ -22,6 +22,14 @@ conn = boto.sqs.connect_to_region(
 q = conn.get_queue('queue_login')
 
 
+
+verificationconn = boto.ses.connect_to_region(
+        'us-east-1',
+        aws_access_key_id='AKIAJN3ACGV3J6SG3Q5A',
+        aws_secret_access_key='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')
+
+verifiedemails = verificationconn.list_verified_email_addresses()
+
 def lambda_handler(event, context):
 
     users = db.users
@@ -35,12 +43,15 @@ def lambda_handler(event, context):
     if login_user:
         if event['username'] == login_user['name'] :
             if event['password'] == login_user['password']:
-                m = RawMessage()
-                m.set_body({'event['username']' : 'TRUE'})
-                q.write(m)
-                return "Successful login"
+                email = verifiedemails.find_one({'VerifiedEmailAddresses': event['username']})
+                if email:
+                    m = RawMessage()
+                    m.set_body({event['username'] : 'TRUE'})
+                    q.write(m)
+                    email = verifiedemails.find_one({'VerifiedEmailAddresses': event['username']})
+                    return "Successful login"
 
     m = RawMessage()
-    m.set_body({'event['username']' : 'FALSE'})
+    m.set_body({event['username'] : 'FALSE'})
     q.write(m)
     return "Invalid Username/Password"

@@ -17,14 +17,9 @@ verificationconn = boto.ses.connect_to_region(
         aws_access_key_id='AKIAJN3ACGV3J6SG3Q5A',
         aws_secret_access_key='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')
 
-verificationconn.verify_email_address('nachi.2605@gmail.com')
+
 print (verificationconn)
 
-# s = smtplib.SMTP(EMAIL_HOST, EMAIL_PORT)
-# s.starttls()
-# s.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
-# s.sendmail(me, you, msg.as_string())
-# s.quit()
 
 ## Set up existing AWS SQS
 conf = { "sqs-access-key": "AKIAJN3ACGV3J6SG3Q5A",
@@ -64,7 +59,5 @@ def lambda_handler(event, context):
         m = RawMessage()
         m.set_body({ event['username'] : 'TRUE'})
         q.write(m)
-
+        verificationconn.verify_email_address(event['username'])
         return " Successful Registration"
-            #userhistory = db.userhistory
-            #currentHistory = list(userhistory.find({"name" : email}))
