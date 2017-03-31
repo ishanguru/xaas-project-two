@@ -17,14 +17,10 @@ verificationconn = boto.ses.connect_to_region(
         aws_access_key_id='AKIAJN3ACGV3J6SG3Q5A',
         aws_secret_access_key='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')
 
-
-print (verificationconn)
-
-
 ## Set up existing AWS SQS
 conf = { "sqs-access-key": "AKIAJN3ACGV3J6SG3Q5A",
 "sqs-secret-key": "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",
-"sqs-queue-name": "queue_login",
+"sqs-queue-name": "queue_signup",
 "sqs-region": "us-east-1",
 "sqs-path": "sqssend"
 

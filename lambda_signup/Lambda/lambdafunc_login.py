@@ -6,7 +6,11 @@ from flask_pymongo import PyMongo
 connectdb = MongoClient('mongodb://Gunnernet:nachiket_99@ds147069.mlab.com:47069/userdb')
 db = connectdb.userdb
 
-conf = {
+conf = { "sqs-access-key": "AKIAJN3ACGV3J6SG3Q5A",
+"sqs-secret-key": "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",
+"sqs-queue-name": "queue_login",
+"sqs-region": "us-east-1",
+"sqs-path": "sqssend"
 
 }
 
@@ -21,7 +25,7 @@ conn = boto.sqs.connect_to_region(
 
 q = conn.get_queue('queue_login')
 
-
+import boto.ses
 
 verificationconn = boto.ses.connect_to_region(
         'us-east-1',
@@ -30,26 +34,26 @@ verificationconn = boto.ses.connect_to_region(
 
 verifiedemails = verificationconn.list_verified_email_addresses()
 
+
 def lambda_handler(event, context):
 
     users = db.users
     login_user = users.find_one({'name' : event['username']})
 
-    print (event['username'])
-    print (event['password'])
-    print (login_user['name'])
-    print (login_user['password'])
 
     if login_user:
         if event['username'] == login_user['name'] :
             if event['password'] == login_user['password']:
-                email = verifiedemails.find_one({'VerifiedEmailAddresses': event['username']})
-                if email:
-                    m = RawMessage()
-                    m.set_body({event['username'] : 'TRUE'})
-                    q.write(m)
-                    email = verifiedemails.find_one({'VerifiedEmailAddresses': event['username']})
-                    return "Successful login"
+                for a in verifiedemails.values():
+                    for b in a.values():
+                        for email in b.values():
+                            for i in email:
+                                if (i == event['username']):                
+                                    m = RawMessage()
+                                    m.set_body({event['username'] : 'TRUE'})
+                                    q.write(m)
+                                    email = verifiedemails.find_one({'VerifiedEmailAddresses': event['username']})
+                                    return "Successful login"
 
     m = RawMessage()
     m.set_body({event['username'] : 'FALSE'})
