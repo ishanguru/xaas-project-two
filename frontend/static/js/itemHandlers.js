@@ -78,16 +78,3 @@ class ItemHandler {
     }
 }
 
-var handlerForItem1 = new ItemHandler(1597,
-    "Unity 5.x Cookbook",
-    "1597",
-    accountHandler,
-    'customButton1'
-);
-
-var handlerForItem2 = new ItemHandler(2098,
-    "Android Programming for Beginners",
-    "20.98",
-    accountHandler,
-    'customButton2'
-);
