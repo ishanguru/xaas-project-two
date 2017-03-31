@@ -10,7 +10,7 @@ def lambda_handler(event, context):
         return "login"
     elif method == "signup":
     	response = sns_client.publish(TopicArn='arn:aws:sns:us-east-1:648812771825:signup', Message=json.dumps(event))
-        return "sign up"
+        return "signup"
     elif method == "charge":
     	response = sns_client.publish(TopicArn='arn:aws:sns:us-east-1:648812771825:payments', Message=json.dumps(event))
         return "charge"

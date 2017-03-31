@@ -70,6 +70,7 @@ class ItemHandler {
     }
 
      checkOutHandlerFactory(configAttributes, tokenItems) {
+        var that = this;
         return StripeCheckout.configure({
             key: configAttributes["key"],
             image: configAttributes["image"],
@@ -79,8 +80,8 @@ class ItemHandler {
                 $.ajax({
                     type: "POST",
                     url: "https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/orchestratorV2/ui-api",
-                    headers: {"Authorization": "JWT " + this.accountHandler.jwt_token},
-                    data: JSON.stringify(Object.assign(token, {"jwt": this.accountHandler.jwt_token})),
+                    headers: {"Authorization": "JWT " + that.accountHandler.jwt_token},
+                    data: JSON.stringify(Object.assign(token, {"jwt": that.accountHandler.jwt_token})),
                     success: function (data) {
                         startPollCharge();
                     },
@@ -103,6 +104,6 @@ class ItemHandler {
         });
     }
 }
-
+console.log(accountHandler);
 var handlerForItem1 = new ItemHandler(1597, "Unity 5.x Cookbook", "1597", accountHandler);
 var handlerForItem2 = new ItemHandler(2098, "Android Programming for Beginners", "20.98", accountHandler);
