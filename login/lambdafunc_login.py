@@ -34,8 +34,14 @@ verifiedemails = verificationconn.list_verified_email_addresses()
 
 
 def lambda_handler(event, context):
+
+    #if polling
+    if "poll" in event and event["poll"] == True:
+        return connectdb.loginAttempts.findOne({"_id": event["laid"]})
+
     users = db.users
     login_user = users.find_one({'name': event['username']})
+
 
     if login_user:
         if event['username'] == login_user['name']:
@@ -62,3 +68,4 @@ def lambda_handler(event, context):
     m.set_body({event['username']: 'FALSE'})
     q.write(m)
     return "Invalid Username/Password"
+
