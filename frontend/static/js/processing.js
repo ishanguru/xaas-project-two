@@ -28,19 +28,26 @@ processingDisplayHandler.clear = function () {
 var processingHandler = {
     status : "clear",
     displayHandler : processingDisplayHandler,
+    get onGoingProcess() {
+        return !(processingHandler.status == "success" ||
+               processingHandler.status == "clear");
+    }
 };
 
 processingHandler.updateStatus = function (status, msg) {
     this.status = status;
     this.displayHandler[this.status](msg);
-
 };
 
-function onGoingProcess() {
-    if (!(processingHandler.status == "success" ||
-        processingHandler.status == "clear")) {
-        alert("Wait for ongoing process!");
-        return true;
-    }
-    return false;
-}
+processingHandler.checkForOnGoingProcessWithWarning =
+    function (warning) {
+        if (!processingHandler.onGoingProcess) {
+            return;
+        }
+        if (warning != undefined) {
+            alert(warning);
+            return;
+        }
+        alert("Wait for ongoing process!")
+        return;
+    };

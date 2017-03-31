@@ -11,9 +11,9 @@ $(document).ready(function() {
 
     $('#loginForm').submit(function (e) {
         e.preventDefault();
-        if (onGoingProcess()) {
+          if (processingHandler.checkForOnGoingProcessWithWarning()) {
             return;
-        }
+          }
         handleLogin($(this).serializeArray().reduce(
             function(accumulater, curr) {
                 accumulater[curr.name] = curr.value;
@@ -23,9 +23,9 @@ $(document).ready(function() {
     });
     $('#signUpForm').submit(function (e) {
         e.preventDefault();
-        if (onGoingProcess()) {
+          if (processingHandler.checkForOnGoingProcessWithWarning()) {
             return;
-        }
+          }
         var formData = $(this).serializeArray().reduce(
             function(accumulater, curr) {
                 accumulater[curr.name] = curr.value;
@@ -44,7 +44,7 @@ $(document).ready(function() {
     
     document.getElementById('customButton1').addEventListener('click', function(e) {
       // Open Checkout with further options:
-          if (onGoingProcess()) {
+          if (processingHandler.checkForOnGoingProcessWithWarning()) {
             return;
           }
           if (accountHandler.jwt_token === null) {
@@ -57,7 +57,7 @@ $(document).ready(function() {
      
      document.getElementById('customButton2').addEventListener('click', function(e) {
       // Open Checkout with further options:
-          if (onGoingProcess()) {
+          if (processingHandler.checkForOnGoingProcessWithWarning()) {
             return;
           }
         if (accountHandler.jwt_token === null) {
