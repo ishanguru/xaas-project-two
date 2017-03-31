@@ -41,32 +41,6 @@ $(document).ready(function() {
         }
         handleSignup(formData);
     });
-    
-    document.getElementById('customButton1').addEventListener('click', function(e) {
-      // Open Checkout with further options:
-          if (processingHandler.checkForOnGoingProcessWithWarning()) {
-            return;
-          }
-          if (accountHandler.jwt_token === null) {
-              alert("You must be logged in to purchase something");
-          } else {
-              handlerForItem1.checkOut();
-          }
-          e.preventDefault();
-     });
-     
-     document.getElementById('customButton2').addEventListener('click', function(e) {
-      // Open Checkout with further options:
-          if (processingHandler.checkForOnGoingProcessWithWarning()) {
-            return;
-          }
-        if (accountHandler.jwt_token === null) {
-              alert("You must be logged in to purchase something");
-          }  else {
-              handlerForItem2.checkOut();
-          }
-          e.preventDefault();
-     });
 
     // Close Checkout on page navigation:
     window.addEventListener('popstate', function() {

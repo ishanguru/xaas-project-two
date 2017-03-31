@@ -1,11 +1,26 @@
 class ItemHandler {
-    constructor(amount, name, description, accountHandler) {
+    constructor(amount, name, description, accountHandler, elementId, processingHandler) {
         this.amount = amount;
         this.name = name;
         this.description = description;
         this.accountHandler = accountHandler;
+        this.elementId = elementId;
+        this.processingHandler = processingHandler;
         this.checkOutHandler =
             this.checkOutHandlerDefaultConfigFactory(this.amount);
+        document.getElementById(this.elementId).addEventListener('click', function(e) {
+            // Open Checkout with further options:
+            e.preventDefault();
+            if (this.processingHandler.checkForOnGoingProcessWithWarning()) {
+                return;
+            }
+
+            if (this.accountHandler.jwt_token === null) {
+              alert("You must be logged in to purchase something");
+            }  else {
+                  this.checkOut();
+            }
+         });
     }
 
     close() {
@@ -62,6 +77,17 @@ class ItemHandler {
         });
     }
 }
-console.log(accountHandler);
-var handlerForItem1 = new ItemHandler(1597, "Unity 5.x Cookbook", "1597", accountHandler);
-var handlerForItem2 = new ItemHandler(2098, "Android Programming for Beginners", "20.98", accountHandler);
+
+var handlerForItem1 = new ItemHandler(1597,
+    "Unity 5.x Cookbook",
+    "1597",
+    accountHandler,
+    'customButton1'
+);
+
+var handlerForItem2 = new ItemHandler(2098,
+    "Android Programming for Beginners",
+    "20.98",
+    accountHandler,
+    'customButton2'
+);
