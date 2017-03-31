@@ -8,17 +8,18 @@ class ItemHandler {
         this.processingHandler = processingHandler;
         this.checkOutHandler =
             this.checkOutHandlerDefaultConfigFactory(this.amount);
+        var that = this;
         document.getElementById(this.elementId).addEventListener('click', function(e) {
             // Open Checkout with further options:
             e.preventDefault();
-            if (this.processingHandler.checkForOnGoingProcessWithWarning()) {
+            if (processingHandler.checkForOnGoingProcessWithWarning()) {
                 return;
             }
 
-            if (this.accountHandler.jwt_token === null) {
+            if (accountHandler.jwt_token === null) {
               alert("You must be logged in to purchase something");
             }  else {
-                  this.checkOut();
+                  that.checkOut();
             }
          });
     }
@@ -77,4 +78,3 @@ class ItemHandler {
         });
     }
 }
-

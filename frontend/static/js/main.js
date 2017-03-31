@@ -13,14 +13,16 @@ $(document).ready(function() {
         "Unity 5.x Cookbook",
         "1597",
         accountHandler,
-        'customButton1'
+        'customButton1',
+        processingHandler
     );
 
     var handlerForItem2 = new ItemHandler(2098,
         "Android Programming for Beginners",
         "20.98",
         accountHandler,
-        'customButton2'
+        'customButton2',
+        processingHandler
     );
 
 
