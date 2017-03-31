@@ -43,7 +43,7 @@ def lambda_handler(event, context):
     existing_user = users.find_one({'name' : event['username']})
     if existing_user:
         m = RawMessage()
-        m.set_body({ event['username'] : 'FALSE'})
+        m.set_body({ str(event['username']) : 'FALSE'})
         q.write(m)
         return 'That inputEmail already exists!'
     else:
@@ -51,7 +51,7 @@ def lambda_handler(event, context):
         hashpass = event['password']
         users.insert({'name' : event['username'], 'password' : hashpass})
         m = RawMessage()
-        m.set_body({ event['username'] : 'TRUE'})
+        m.set_body({ str(event['username']) : 'TRUE'})
         q.write(m)
         verificationconn.verify_email_address(event['username'])
         return " Successful Registration"

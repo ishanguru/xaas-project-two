@@ -5,6 +5,10 @@ from boto.sqs.message import RawMessage
 connectdb = MongoClient('mongodb://Gunnernet:nachiket_99@ds147069.mlab.com:47069/userdb')
 db = connectdb.userdb
 
+import boto.sns
+
+
+
 conf = { "sqs-access-key": "AKIAJN3ACGV3J6SG3Q5A",
 "sqs-secret-key": "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",
 "sqs-queue-name": "queue_login",
@@ -48,9 +52,9 @@ def lambda_handler(event, context):
                             for i in email:
                                 if (i == event['username']):
                                     m = RawMessage()
-                                    m.set_body({event['username'] : 'TRUE'})
+                                    m.set_body(str({event['username']) : 'TRUE'})
                                     q.write(m)
-                        
+
                                     return "Successful login"
 
     m = RawMessage()
