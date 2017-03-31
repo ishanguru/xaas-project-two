@@ -25,12 +25,12 @@ function pollCharge(count) {
     }
     var data = {};
     data["jwt"] = accountHandler.jwt_token;
-    data["type"] = "charge";
+    data["type"] = "chargeQuery";
 
     $.ajax({
-        type: "GET",
+        type: "POST",
         url: "https://b98im1pkw9.execute-api.us-east-1.amazonaws.com/prod/checkqueue",
-        data: data,
+        data: JSON.stringify(data),
         contentType: "application/json; charset=utf-8",
         success: function(data) {
             if (data["status"] === "success") {
@@ -47,7 +47,7 @@ function pollCharge(count) {
 
 function pollLogin(count, info) {
     console.log(info);
-    info["type"] = "login";
+    info["type"] = "loginQuery";
 
     function handleFailure(count, data) {
         if (count <= 4) { //try again
@@ -59,9 +59,9 @@ function pollLogin(count, info) {
     }
 
     $.ajax({
-        type: "GET",
+        type: "POST",
         url: "https://b98im1pkw9.execute-api.us-east-1.amazonaws.com/prod/checkqueue",
-        data: info,
+        data: JSON.stringify(info),
         contentType: "application/json; charset=utf-8",
         success: function(data) {
             if (data["status"] === "success") {
@@ -78,7 +78,7 @@ function pollLogin(count, info) {
 }
 
 function pollSignup(count, info) {
-    info["type"] = "signup";
+    info["type"] = "signupQuery";
 
     function handleFailure(count, data) {
         if (count <= 4) { //try again
@@ -90,9 +90,9 @@ function pollSignup(count, info) {
     }
 
     $.ajax({
-        type: "GET",
+        type: "POST",
         url: "https://b98im1pkw9.execute-api.us-east-1.amazonaws.com/prod/checkqueue",
-        data: info,
+        data: JSON.stringify(info),
         contentType: "application/json; charset=utf-8",
         success: function(data) {
             if (data["status"] === "success") {
