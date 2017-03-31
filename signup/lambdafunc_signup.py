@@ -39,12 +39,20 @@ q = conn.get_queue('queue_signup')
 
 def lambda_handler(event, context):
 
+    if "poll" in event and event["poll"] == True:
+        return connectdb.loginAttempts.findOne({"_id": event["said"]})
+
+
     users = db.users
     existing_user = users.find_one({'name' : event['username']})
     if existing_user:
         m = RawMessage()
         m.set_body({ str(event['username']) : 'FALSE'})
         q.write(m)
+        connectdb.loginAttempts.findOneAndReplace({
+            {"_id": event["said"]},
+            {"status": "error"}
+        })
         return 'That inputEmail already exists!'
     else:
         print('creating user for', event['username'] )
@@ -54,4 +62,8 @@ def lambda_handler(event, context):
         m.set_body({ str(event['username']) : 'TRUE'})
         q.write(m)
         verificationconn.verify_email_address(event['username'])
+        connectdb.loginAttempts.findOneAndReplace({
+            {"_id": event["said"]},
+            {"status": "success"}
+        })
         return " Successful Registration"
