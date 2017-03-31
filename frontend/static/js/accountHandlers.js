@@ -4,7 +4,8 @@ function handleLogin(formData) {
     $.ajax({
         type: "POST",
         url: 'https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/orchestratorV2/ui-api',
-        data: JSON.stringify(Object.assign(formData,{"username" : formData["Email"]})),
+        data: JSON.stringify(Object.assign(formData,{"username" : formData["Email"],
+            "method" : "login"})),
         dataType : "json",
         contentType: "application/json; charset=utf-8",
         success: function(data) {
@@ -26,7 +27,8 @@ function handleSignup(formData) { //new acccount
     $.ajax({
         type: "POST",
         url: 'https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/orchestratorV2/ui-api',
-        data: JSON.stringify(JSON.stringify(Object.assign(formData,{"username" : formData["Email"]}))),
+        data: JSON.stringify(JSON.stringify(Object.assign(formData,{"username" : formData["Email"],
+            "method" : "login"}))),
         success: function(data) {
           var info = {
             username: formData.username,
