@@ -7,7 +7,7 @@ from bson.objectid import ObjectId
 
 ## Connection with the MongoDB
 connectdb = MongoClient('mongodb://user1:user1password@ds149040.mlab.com:49040/user_db')["user_db"]
-db = connectdb.userdb
+db = connectdb
 
 
 botoconn = boto.sns.connect_to_region( 'us-east-1' )
@@ -38,7 +38,7 @@ q = conn.get_queue('queue_signup')
 def lambda_handler(event, context):
 
     if "type" in event and event["type"] == "signupQuery":
-        return str(connectdb.signupAttempts.find_one({"_id": event["aid"]}))
+        return str(connectdb.signupAttempts.find_one({"_id": ObjectId(str(event["aid"]))}))
 
 
     users = db.users

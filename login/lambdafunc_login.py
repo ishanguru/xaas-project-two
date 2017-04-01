@@ -4,7 +4,7 @@ from boto.sqs.message import RawMessage
 from bson.objectid import ObjectId
 
 connectdb = MongoClient('mongodb://user1:user1password@ds149040.mlab.com:49040/user_db')["user_db"]
-db = connectdb.userdb
+db = connectdb
 
 import boto.sns
 
@@ -38,7 +38,7 @@ def lambda_handler(event, context):
 
     #if polling
     if "type" in event and event["type"] == "loginQuery":
-        return connectdb.loginAttempts.find_one({"_id": event["aid"]})
+        return connectdb.loginAttempts.find_one({"_id": ObjectId(str(event["aid"]))}))
 
     users = db.users
     login_user = users.find_one({'name': event['username']})
