@@ -10,6 +10,7 @@ function handleLogin(formData) {
         contentType: "application/json; charset=utf-8",
         success: function(data) {
           var info = {
+            aid: data,
             username: formData.username,
             password: formData.password
           };
@@ -31,6 +32,7 @@ function handleSignup(formData) { //new acccount
         data: JSON.stringify(formData),
         success: function(data) {
           var info = {
+            aid: data,
             username: formData.username,
             password: formData.password
           };
