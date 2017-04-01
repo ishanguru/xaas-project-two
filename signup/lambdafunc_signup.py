@@ -38,7 +38,7 @@ q = conn.get_queue('queue_signup')
 def lambda_handler(event, context):
 
     if "type" in event and event["type"] == "signupQuery":
-        return connectdb.loginAttempts.findOne({"_id": event["aid"]})
+        return str(connectdb.signupAttempts.find_one({"_id": event["aid"]}))
 
 
     users = db.users

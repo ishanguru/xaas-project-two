@@ -39,7 +39,7 @@ def processSignupData(event):
     queue = conn.get_queue('queue_signup')
     response = []
 
-    for message in queue.get_messages():
+    for message in queue.get_messages(10):
         print str(message.get_body())
         response.append(str(message.get_body()))
 

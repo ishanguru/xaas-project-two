@@ -38,7 +38,7 @@ def lambda_handler(event, context):
 
     #if polling
     if "type" in event and event["type"] == "loginQuery":
-        return connectdb.loginAttempts.findOne({"_id": event["aid"]})
+        return connectdb.loginAttempts.find_one({"_id": event["aid"]})
 
     users = db.users
     login_user = users.find_one({'name': event['username']})
