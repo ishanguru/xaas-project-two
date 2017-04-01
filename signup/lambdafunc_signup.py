@@ -4,7 +4,7 @@ import boto.ses
 import boto.sqs
 from boto.sqs.message import RawMessage
 ## Connection with the MongoDB
-connectdb = MongoClient('mongodb://Gunnernet:nachiket_99@ds147069.mlab.com:47069/userdb')
+connectdb = MongoClient('mongodb://user1:password@ds149040.mlab.com:49040/user_db')
 db = connectdb.userdb
 
 
@@ -39,8 +39,8 @@ q = conn.get_queue('queue_signup')
 
 def lambda_handler(event, context):
 
-    if "poll" in event and event["poll"] == True:
-        return connectdb.loginAttempts.findOne({"_id": event["said"]})
+    if "type" in event and event["type"] == "signupQuery":
+        return connectdb.loginAttempts.findOne({"_id": event["aid"]})
 
 
     users = db.users
@@ -49,8 +49,8 @@ def lambda_handler(event, context):
         m = RawMessage()
         m.set_body({ str(event['username']) : 'FALSE'})
         q.write(m)
-        connectdb.loginAttempts.findOneAndReplace({
-            {"_id": event["said"]},
+        connectdb.signupAttempts.findOneAndReplace({
+            {"_id": event["aid"]},
             {"status": "error"}
         })
         return 'That inputEmail already exists!'
@@ -62,8 +62,8 @@ def lambda_handler(event, context):
         m.set_body({ str(event['username']) : 'TRUE'})
         q.write(m)
         verificationconn.verify_email_address(event['username'])
-        connectdb.loginAttempts.findOneAndReplace({
-            {"_id": event["said"]},
+        connectdb.signupAttempts.findOneAndReplace({
+            {"_id": event["aid"]},
             {"status": "success"}
         })
         return " Successful Registration"

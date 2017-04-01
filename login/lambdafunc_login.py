@@ -2,7 +2,7 @@ from pymongo import MongoClient
 import boto.sqs
 from boto.sqs.message import RawMessage
 
-connectdb = MongoClient('mongodb://Gunnernet:nachiket_99@ds147069.mlab.com:47069/userdb')
+connectdb = MongoClient('mongodb://user1:password@ds149040.mlab.com:49040/user_db')
 db = connectdb.userdb
 
 import boto.sns
@@ -36,8 +36,8 @@ verifiedemails = verificationconn.list_verified_email_addresses()
 def lambda_handler(event, context):
 
     #if polling
-    if "poll" in event and event["poll"] == True:
-        return connectdb.loginAttempts.findOne({"_id": event["laid"]})
+    if "type" in event and event["type"] == "loginQuery":
+        return connectdb.loginAttempts.findOne({"_id": event["aid"]})
 
     users = db.users
     login_user = users.find_one({'name': event['username']})
@@ -55,14 +55,14 @@ def lambda_handler(event, context):
                                     m.set_body(str({event['username']): 'TRUE'})
                                     q.write(m)
                                     connectdb.loginAttempts.findOneAndReplace({
-                                        {"_id": event["laid"]},
+                                        {"_id": event["aid"]},
                                         {"status": "success"}
                                     })
                                     return "Successful login"
 
     m = RawMessage()
     connectdb.loginAttempts.findOneAndReplace({
-        {"_id": event["laid"]},
+        {"_id": event["aid"]},
         {"status": "error"}
     })
     m.set_body({event['username']: 'FALSE'})
