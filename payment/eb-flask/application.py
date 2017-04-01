@@ -3,7 +3,7 @@ import stripe
 import os
 import boto3
 from sqs_services import SQSServices
-# from flask_sqlalchemy import SQLAlchemy
+from pymongo import MongoClient
 from datetime import timedelta
 import json
 import requests
@@ -15,19 +15,11 @@ stripe_keys = {
 
 stripe.api_key = stripe_keys['secret_key']
 
-# EB looks for an 'application' callable by default.
 application = Flask(__name__)
-# application.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://p1backend:project1databasepasswordformad@p1madinstance.cukjopk8vvdd.us-west-2.rds.amazonaws.com:5432/madp1db'
-# db = SQLAlchemy(application)
-
 application.debug = True
 application.config['SECRET_KEY'] = 'super-secret'
 
-#sqs
-try:
-    sqs_queue = SQSServices()
-except Exception as e:
-    print("Queue already exists")
+connectdb = MongoClient('mongodb://user1:user1password@ds149030.mlab.com:49030/charge_db')["charge_db"]
 
 @application.route('/sns', methods = ['GET', 'POST', 'PUT'])
 def snsFunction():
@@ -45,45 +37,56 @@ def snsFunction():
         url = requests.get(notification['SubscribeURL'])
         # print(url) 
     elif headers == 'Notification':
-        charge(notification)
+        chargeStatus = charge(notification)
     else: 
         print("Headers not specified")
 
+    if chargeStatus:
+        return "Payment Processed\n"
+        
     return "SNS Notification Recieved\n"  
+
+@application.route('/getpayment', methods=['GET'])
+def getPayment():
+    caid = request.form["aid"]
+    paymentObject = connectdb.caids.find_one({"_id": ObjectId(str(caid))})
+    return paymentObject
 
 #stripe
 @application.route('/payment', methods=['POST'])
 def charge(notification):
     # Amount in cents
+    print(notification)
+
     amount = notification["amount"]
-    print notification
-
+    caid = notification["aid"]
+    email = notification["email"]
+    source=notification["id"]
+    
     customer = stripe.Customer.create(
-        email=notification['email'],
-        source=notification['id']
+        email=email,
+        source=source
     )
 
-    charge = stripe.Charge.create(
-        customer=customer.id,
-        amount=amount,
-        currency='usd',
-        description='Flask Charge'
-    )
+    try:
+        charge = stripe.Charge.create(
+            customer=customer.id,
+            amount=amount,
+            currency='usd',
+            description='Flask Charge'
+        )
 
+        connectdb.caids.find_one_and_replace({"_id": ObjectId(str(caid))},{"status": "success"})
+        pass
+    except Exception as e:
+        print "Error making payment"
+    
     result = {}
     result['status'] = charge['status']
     result['amount'] = charge['amount']
     result['email'] = notification['email']
 
     transaction = jsonify(result)
-
-    queue_name = sqs_queue.getQueueName('paymentsQueue')
-    response = queue_name.send_message(MessageBody=transaction, MessageAttributes={
-            'email': {
-                'StringValue': notification['email'],
-                'DataType': 'String'
-            }    
-        })
 
     # send order to user info microservice to store stuff into db
     status = request.post('https://ec2-52-15-159-218.us-east-2.compute.amazonaws.com:5000/order', json=transaction)
