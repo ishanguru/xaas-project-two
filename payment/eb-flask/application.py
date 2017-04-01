@@ -37,11 +37,20 @@ def snsFunction():
         url = requests.get(notification['SubscribeURL'])
         # print(url) 
     elif headers == 'Notification':
-        charge(notification)
+        chargeStatus = charge(notification)
     else: 
         print("Headers not specified")
 
+    if chargeStatus:
+        return "Payment Processed\n"
+        
     return "SNS Notification Recieved\n"  
+
+@application.route('/getpayment', methods=['GET'])
+def getPayment():
+    caid = request.form["aid"]
+    paymentObject = connectdb.caids.find_one({"_id": ObjectId(str(caid))})
+    return paymentObject
 
 #stripe
 @application.route('/payment', methods=['POST'])
@@ -72,7 +81,6 @@ def charge(notification):
     result['email'] = notification['email']
 
     connectdb.caids.find_one_and_replace({"_id": ObjectId(str(caid))},{"status": "success"})
-
     transaction = jsonify(result)
 
     # send order to user info microservice to store stuff into db
