@@ -3,7 +3,7 @@ import stripe
 import os
 import boto3
 from sqs_services import SQSServices
-# from flask_sqlalchemy import SQLAlchemy
+from pymongo import MongoClient
 from datetime import timedelta
 import json
 import requests
@@ -15,19 +15,11 @@ stripe_keys = {
 
 stripe.api_key = stripe_keys['secret_key']
 
-# EB looks for an 'application' callable by default.
 application = Flask(__name__)
-# application.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://p1backend:project1databasepasswordformad@p1madinstance.cukjopk8vvdd.us-west-2.rds.amazonaws.com:5432/madp1db'
-# db = SQLAlchemy(application)
-
 application.debug = True
 application.config['SECRET_KEY'] = 'super-secret'
 
-#sqs
-try:
-    sqs_queue = SQSServices()
-except Exception as e:
-    print("Queue already exists")
+connectdb = MongoClient('mongodb://user1:user1password@ds149030.mlab.com:49030/charge_db')["charge_db"]
 
 @application.route('/sns', methods = ['GET', 'POST', 'PUT'])
 def snsFunction():
@@ -55,12 +47,16 @@ def snsFunction():
 @application.route('/payment', methods=['POST'])
 def charge(notification):
     # Amount in cents
-    amount = notification["amount"]
-    print notification
+    print(notification)
 
+    amount = notification["amount"]
+    caid = notification["aid"]
+    email = notification["email"]
+    source=notification["id"]
+    
     customer = stripe.Customer.create(
-        email=notification['email'],
-        source=notification['id']
+        email=email,
+        source=source
     )
 
     charge = stripe.Charge.create(
@@ -75,15 +71,9 @@ def charge(notification):
     result['amount'] = charge['amount']
     result['email'] = notification['email']
 
-    transaction = jsonify(result)
+    connectdb.caids.find_one_and_replace({"_id": ObjectId(str(caid))},{"status": "success"})
 
-    queue_name = sqs_queue.getQueueName('paymentsQueue')
-    response = queue_name.send_message(MessageBody=transaction, MessageAttributes={
-            'email': {
-                'StringValue': notification['email'],
-                'DataType': 'String'
-            }    
-        })
+    transaction = jsonify(result)
 
     # send order to user info microservice to store stuff into db
     status = request.post('https://ec2-52-15-159-218.us-east-2.compute.amazonaws.com:5000/order', json=transaction)
