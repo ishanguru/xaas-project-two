@@ -1,8 +1,9 @@
 from pymongo import MongoClient
 import boto.sqs
 from boto.sqs.message import RawMessage
+from bson.objectid import ObjectId
 
-connectdb = MongoClient('mongodb://user1:password@ds149040.mlab.com:49040/user_db')
+connectdb = MongoClient('mongodb://user1:user1password@ds149040.mlab.com:49040/user_db')["user_db"]
 db = connectdb.userdb
 
 import boto.sns
@@ -51,20 +52,20 @@ def lambda_handler(event, context):
                         for email in b.values():
                             for i in email:
                                 if (i == event['username']):
-                                    m = RawMessage()
-                                    m.set_body(str({event['username']): 'TRUE'})
-                                    q.write(m)
-                                    connectdb.loginAttempts.findOneAndReplace({
-                                        {"_id": event["aid"]},
+                                    # m = RawMessage()
+                                    # m.set_body(str({event['username']): 'TRUE'}))
+                                    # q.write(m)
+                                    connectdb.loginAttempts.find_one_and_replace(
+                                        {"_id": ObjectId(str(event["aid"]))},
                                         {"status": "success"}
-                                    })
+                                    )
                                     return "Successful login"
 
     m = RawMessage()
-    connectdb.loginAttempts.findOneAndReplace({
-        {"_id": event["aid"]},
+    connectdb.loginAttempts.find_one_and_replace(
+        {"_id": ObjectId(str(event["aid"]))},
         {"status": "error"}
-    })
+    )
     m.set_body({event['username']: 'FALSE'})
     q.write(m)
     return "Invalid Username/Password"
