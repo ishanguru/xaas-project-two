@@ -40,13 +40,13 @@ def lambda_handler(event, context):
     if "type" in event and event["type"] == "signupQuery":
         return str(connectdb.signupAttempts.find_one({"_id": ObjectId(str(event["aid"]))}))
 
-
+    print (str(event["aid"]))
     users = db.users
     existing_user = users.find_one({'name' : event['username']})
     if existing_user:
-        m = RawMessage()
-        m.set_body({ str(event['username']) : 'FALSE'})
-        q.write(m)
+        #m = RawMessage()
+        #m.set_body({ str(event['username']) : 'FALSE'})
+        #q.write(m)
         connectdb.signupAttempts.find_one_and_replace(
             {"_id": ObjectId(str(event["aid"]))},
             {"status": "error"}
