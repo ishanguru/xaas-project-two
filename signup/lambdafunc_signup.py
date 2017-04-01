@@ -4,6 +4,7 @@ import boto.ses
 import boto.sqs
 from boto.sqs.message import RawMessage
 from bson.objectid import ObjectId
+import json
 
 ## Connection with the MongoDB
 connectdb = MongoClient('mongodb://user1:user1password@ds149040.mlab.com:49040/user_db')["user_db"]
@@ -36,19 +37,24 @@ q = conn.get_queue('queue_signup')
 
 
 def lambda_handler(event, context):
-
+    print ("EVENT")
+    print (str(event))
     if "type" in event and event["type"] == "signupQuery":
-        return str(connectdb.signupAttempts.find_one({"_id": ObjectId(str(event["aid"]))}))
-
-    print (str(event["aid"]))
+        return str(connectdb.signupAttempts.find_one({"_id": ObjectId(event["aid"])}))
+    if ("Records" in event):
+        event = event["Records"][0]["Sns"]["Message"]
+    print ("EVENT")
+    print (event)
+    print (type(event))
+    event = json.loads(str(event))
     users = db.users
-    existing_user = users.find_one({'name' : event['username']})
+    existing_user = users.find_one({'name' : event["username"]})
     if existing_user:
         #m = RawMessage()
         #m.set_body({ str(event['username']) : 'FALSE'})
         #q.write(m)
         connectdb.signupAttempts.find_one_and_replace(
-            {"_id": ObjectId(str(event["aid"]))},
+            {"_id": ObjectId(event["aid"])},
             {"status": "error"}
         )
         return 'That inputEmail already exists!'
@@ -61,7 +67,7 @@ def lambda_handler(event, context):
         # q.write(m)
         verificationconn.verify_email_address(event['username'])
         connectdb.signupAttempts.find_one_and_replace(
-            {"_id": ObjectId(str(event["aid"]))},
+            {"_id": ObjectId(event["aid"])},
             {"status": "success"}
         )
         return " Successful Registration"
