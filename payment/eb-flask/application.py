@@ -68,19 +68,24 @@ def charge(notification):
         source=source
     )
 
-    charge = stripe.Charge.create(
-        customer=customer.id,
-        amount=amount,
-        currency='usd',
-        description='Flask Charge'
-    )
+    try:
+        charge = stripe.Charge.create(
+            customer=customer.id,
+            amount=amount,
+            currency='usd',
+            description='Flask Charge'
+        )
 
+        connectdb.caids.find_one_and_replace({"_id": ObjectId(str(caid))},{"status": "success"})
+        pass
+    except Exception as e:
+        print "Error making payment"
+    
     result = {}
     result['status'] = charge['status']
     result['amount'] = charge['amount']
     result['email'] = notification['email']
 
-    connectdb.caids.find_one_and_replace({"_id": ObjectId(str(caid))},{"status": "success"})
     transaction = jsonify(result)
 
     # send order to user info microservice to store stuff into db
