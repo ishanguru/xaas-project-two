@@ -5,13 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Bootstrap 101 Template</title>
+    <title>The Code Warehouse</title>
 
     <!-- Bootstrap -->
     <link href="static/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom Styles-->
-    <link href="static/css/main.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/main.css">
+    <link rel="stylesheet" href="static/css/w3.css">
+    <link rel="stylesheet" href="static/css/w3-theme-black.css">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -22,65 +24,57 @@
 
 </head>
 <body>
+<div class="w3-top">
+  <nav class="w3-navbar w3-white w3-wide w3-padding-6 w3-card-2">
+      <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">The Code Warehouse</a>
+          </div>
 
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">Programming Books</a>
-        </div>
-
-            <ul class="nav navbar-nav navbar-right">
-                <li id="EmailNavElement"></li>
-                <li id="loginNavElement"><a href="#" data-toggle="modal" data-target="#loginModal">Login</a></li>
-                <li id="logoutNavElement" style="display: none"><a href="#">Logout</a></li>
-                <li id="signUpNavElement" data-toggle="modal" data-target="#signUpModal"><a href="#">Sign Up</a></li>
-            </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-</nav>
-
-
-
-
-<div class="container">
-    <!-- Example row of columns -->
-
-   <h3 id="processingDisplay">Processing</h3>
-
-    <div class="row">
-        <div class="col-sm-12 col-md-6">
-            <div class="thumbnail">
-                <img src="static/images/Unity%205.x%20Cookbook.png" class="img-rounded" alt="Unity 5.x Cookbook">
-                <div class="caption">
-                    <h3>Unity 5.x Cookbook</h3>
-                    <p>Everything you need to tackle Unity programming can be found in this collection of more than 100 Unity 5 recipes, packed with game development tips and tricks</p>
-                   <button id="customButton1">Purchase for 15.97</button>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-12 col-md-6">
-            <div class="thumbnail">
-                <img src="static/images/Android%20Programming%20for%20Beginners.png" class="img-rounded" alt="Responsive Web Design with HTML5 and CSS3">
-                <div class="caption">
-                    <h3>Android Programming for Beginners</h3>
-                    <p>Learn Android application development with this accessible tutorial that takes you through Android and Java programming with practical and actionable steps.</p>
-                    <button id="customButton2">Purchase for 20.98</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
+              <ul class="nav navbar-nav navbar-right">
+                  <li id="EmailNavElement"></li>
+                  <li id="loginNavElement"><a href="#" data-toggle="modal" data-target="#loginModal">Login</a></li>
+                  <li id="logoutNavElement" style="display: none"><a href="#">Logout</a></li>
+                  <li id="signUpNavElement" data-toggle="modal" data-target="#signUpModal"><a href="#">Sign Up</a></li>
+              </ul>
+          </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+  </nav>
 </div>
 
+<br> <br> <br> <br> <br>
 
+<div class="container">
+  <!-- Example row of columns -->
+
+  <h3 id="processingDisplay">Processing</h3>
+
+  <img src="static/images/Unity%205.x%20Cookbook.png" class="img-rounded" alt="Unity 5.x Cookbook">
+  <div class="caption">
+    <h3>Unity 5.x Cookbook</h3>
+    <p>Everything you need to tackle Unity programming can be found in this collection of more than 100 Unity 5 recipes, packed with game development tips and tricks.</p>
+    <button id="customButton1">Purchase for $15.97</button>
+  </div>
+
+  <br>
+  <hr style="height:1px;border:none;color:#333;background-color:#333;" />
+  <br>
+
+  <img src="static/images/Android%20Programming%20for%20Beginners.png" class="img-rounded" alt="Responsive Web Design with HTML5 and CSS3">
+  <div class="caption">
+    <h3>Android Programming for Beginners</h3>
+    <p>Learn Android application development with this accessible tutorial that takes you through Android and Java programming with practical and actionable steps.</p>
+    <button id="customButton2">Purchase for $20.98</button>
+  </div>
+
+</div>
 
 <hr>
 
@@ -115,9 +109,6 @@
                     <button type="submit" class="btn btn-default">Submit</button>
                 </form>
             </div>
-            <div class="modal-footer">"
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
         </div>
 
     </div>
@@ -150,9 +141,6 @@
                     </div>
                     <button type="submit" class="btn btn-default">Submit</button>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
 
