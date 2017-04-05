@@ -2,11 +2,12 @@ from pymongo import MongoClient
 import boto.sqs
 from boto.sqs.message import RawMessage
 from bson.objectid import ObjectId
+import boto.ses
+import boto.sns
+import json
 
 connectdb = MongoClient('mongodb://user1:user1password@ds149040.mlab.com:49040/user_db')["user_db"]
 db = connectdb
-
-import boto.sns
 
 conf = {"sqs-access-key": "AKIAJN3ACGV3J6SG3Q5A",
         "sqs-secret-key": "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",
@@ -24,12 +25,10 @@ conn = boto.sqs.connect_to_region(
 
 q = conn.get_queue('queue_login')
 
-import boto.ses
-
 verificationconn = boto.ses.connect_to_region(
     'us-east-1',
-    aws_access_key_id='AKIAJN3ACGV3J6SG3Q5A',
-    aws_secret_access_key='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')
+    aws_access_key_id='AKIAIYILDTN5HSKGIAOA',
+    aws_secret_access_key='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')
 
 verifiedemails = verificationconn.list_verified_email_addresses()
 
@@ -38,9 +37,19 @@ def lambda_handler(event, context):
 
     #if polling
     if "type" in event and event["type"] == "loginQuery":
-        return connectdb.loginAttempts.find_one({"_id": ObjectId(str(event["aid"]))}))
+        matchingAttempt = connectdb.loginAttempts.find_one({"_id": ObjectId(event["aid"])})
+        return str(matchingAttempt)
 
     users = db.users
+    print("EVENT ORG")
+    print(event)
+
+    if ("Records" in event):
+        event = event["Records"][0]["Sns"]["Message"]
+    print ("EVENT")
+    print (event)
+    event = json.loads(str(event))
+    print (type(event))
     login_user = users.find_one({'name': event['username']})
 
 
@@ -56,17 +65,16 @@ def lambda_handler(event, context):
                                     # m.set_body(str({event['username']): 'TRUE'}))
                                     # q.write(m)
                                     connectdb.loginAttempts.find_one_and_replace(
-                                        {"_id": ObjectId(str(event["aid"]))},
+                                        {"_id": ObjectId(event["aid"])},
                                         {"status": "success"}
                                     )
                                     return "Successful login"
 
-    m = RawMessage()
+    # m = RawMessage()
     connectdb.loginAttempts.find_one_and_replace(
-        {"_id": ObjectId(str(event["aid"]))},
+        {"_id": ObjectId(event["aid"])},
         {"status": "error"}
     )
-    m.set_body({event['username']: 'FALSE'})
-    q.write(m)
+    # m.set_body({event['username']: 'FALSE'})
+    # q.write(m)
     return "Invalid Username/Password"
-
