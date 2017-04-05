@@ -29,7 +29,7 @@ def after_request(response):
             response.headers['Access-Control-Allow-Headers'] = headers
     return response
 
-@application.route('/order', methods=[])
+@application.route('/order', methods=['POST'])
 def payment():
 
     currentUser = request.form['email']
