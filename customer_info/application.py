@@ -32,8 +32,9 @@ def after_request(response):
 @application.route('/order', methods=['POST'])
 def payment():
 
-    currentUser = request.form['email']
-    total = float(request.form['amount'])
+    content = request.get_json(silent=True)
+    currentUser = content['email']
+    total = float(content['amount'])
 
     userhistory = mongo.db.userhistory
     now = str(datetime.date(datetime.now()))
