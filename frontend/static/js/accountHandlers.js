@@ -1,6 +1,8 @@
 function handleLogin(formData) {
     formData["method"] = "login";
-    formData["username"] = formData["Email"];
+    if (!formData["username"]) {
+        formData["username"] = formData["Email"];
+    }
     $('#loginModal').modal('hide');
     $.ajax({
         type: "POST",

@@ -27,15 +27,12 @@ def lambda_handler(event, context):
         return dictToReturn
 
     users = db.users
-    print("EVENT ORG")
-    print(event)
 
     if ("Records" in event):
         event = event["Records"][0]["Sns"]["Message"]
-    print ("EVENT")
-    print (event)
+
     event = json.loads(str(event))
-    print (type(event))
+
     login_user = users.find_one({'name': event['username'], 'password': event['password']})
     if login_user:
         connectdb.loginAttempts.find_one_and_replace(

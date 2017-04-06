@@ -100,8 +100,8 @@ function pollSignup(count, info) {
         contentType: "application/json; charset=utf-8",
         success: function(data) {
             if (data["status"] === "success") {
-              delete formData["passwordCheck"];
-              login(formData);
+              delete info["passwordCheck"];
+              handleLogin(info);
             } else {
                 handleFailure(count,data)
             }
