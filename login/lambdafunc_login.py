@@ -7,12 +7,12 @@ import json
 connectdb = MongoClient('mongodb://user1:user1password@ds149040.mlab.com:49040/user_db')["user_db"]
 db = connectdb
 
-verificationconn = boto.ses.connect_to_region(
-    'us-east-1',
-    aws_access_key_id='AKIAIYILDTN5HSKGIAOA',
-    aws_secret_access_key='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')
-
-verifiedemails = verificationconn.list_verified_email_addresses()
+# verificationconn = boto.ses.connect_to_region(
+#     'us-east-1',
+#     aws_access_key_id='AKIAIYILDTN5HSKGIAOA',
+#     aws_secret_access_key='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')
+#
+# verifiedemails = verificationconn.list_verified_email_addresses()
 
 
 def lambda_handler(event, context):
@@ -20,7 +20,11 @@ def lambda_handler(event, context):
     #if polling
     if "type" in event and event["type"] == "loginQuery":
         matchingAttempt = connectdb.loginAttempts.find_one({"_id": ObjectId(event["aid"])})
-        return str(matchingAttempt)
+        print(type(matchingAttempt))
+        dictToReturn = {}
+        dictToReturn["status"] = str(matchingAttempt["status"])
+        dictToReturn["aid"] =str(matchingAttempt["_id"])
+        return dictToReturn
 
     users = db.users
     print("EVENT ORG")

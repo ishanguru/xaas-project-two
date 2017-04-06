@@ -32,21 +32,21 @@ function pollCharge(count) {
         url: "https://b98im1pkw9.execute-api.us-east-1.amazonaws.com/prod/checkqueue",
         data: JSON.stringify(data),
         contentType: "application/json; charset=utf-8",
-        success: function(data) {
+        success: function(reply) {
+            console.log(reply)
             if (data["status"] === "success") {
                 processingHandler.updateStatus("success", "That operation worked!");
             } else {
-                handleFailure(count,data)
+                handleFailure(count,reply)
             }
         },
-        error: function (data) {
-            handleFailure(count,data)
+        error: function (reply) {
+            handleFailure(count,reply)
         }
     });
 }
 
 function pollLogin(count, info) {
-    console.log(info);
     info["type"] = "loginQuery";
 
     function handleFailure(count, data) {
@@ -63,16 +63,20 @@ function pollLogin(count, info) {
         url: "https://zk84kq0q36.execute-api.us-east-1.amazonaws.com/prod/login",
         data: JSON.stringify(info),
         contentType: "application/json; charset=utf-8",
-        success: function(data) {
-            if (data["status"] === "success") {
-              accountHandler.jwt_token = data.access_token;
-              accountHandler.logIn(formData.username);
+        success: function(reply) {
+            reply = JSON_stringify(reply, true);
+            reply = JSON.parse(reply)
+            if (reply["status"] === "success") {
+                console.log("success")
+              accountHandler.jwt_token = reply.access_token;
+              accountHandler.logIn(info.username);
+              processingHandler.updateStatus("success", "You are logged in. Now buy something or get out!")
             } else {
-                handleFailure(count,data)
+                handleFailure(count,reply)
             }
         },
-        error: function (data) {
-            handleFailure(count,data)
+        error: function (reply) {
+            handleFailure(count,reply)
         }
     });
 }
