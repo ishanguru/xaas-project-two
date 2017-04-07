@@ -17,7 +17,7 @@ function pollCharge(count) {
 
     function handleFailure(count, data) {
         if (count <= 4) { //try again
-            var timeoutID = window.setTimeout(pollCharge(count + 1, info), 200);
+            var timeoutID = window.setTimeout(pollCharge(count + 1), 200);
         } else  {
             //todo: probably want to send this info somewhere
             processingHandler.updateStatus("error", "That operation failed please try again.");
@@ -29,7 +29,7 @@ function pollCharge(count) {
 
     $.ajax({
         type: "POST",
-        url: "https://b98im1pkw9.execute-api.us-east-1.amazonaws.com/prod/checkqueue",
+        url: "https://b98im1pkw9.execute-api.us-east-1.amazonaws.com/getpayment",
         data: JSON.stringify(data),
         contentType: "application/json; charset=utf-8",
         success: function(reply) {
