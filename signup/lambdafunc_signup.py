@@ -13,27 +13,10 @@ db = connectdb
 
 botoconn = boto.sns.connect_to_region( 'us-east-1' )
 
-# verificationconn = boto.ses.connect_to_region(
-#         'us-east-1',
-#         aws_access_key_id='AKIAJN3ACGV3J6SG3Q5A',
-#         aws_secret_access_key='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')
-
-## Set up existing AWS SQS
-# conf = { "sqs-access-key": "AKIAJN3ACGV3J6SG3Q5A",
-# "sqs-secret-key": "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",
-# "sqs-queue-name": "queue_signup",
-# "sqs-region": "us-east-1",
-# "sqs-path": "sqssend"
-#
-# }
-#
-# conn = boto.sqs.connect_to_region(
-#         conf.get('sqs-region'),
-#         aws_access_key_id   = conf.get('sqs-access-key'),
-#         aws_secret_access_key   = conf.get('sqs-secret-key')
-# )
-#
-# q = conn.get_queue('queue_signup')
+verificationconn = boto.ses.connect_to_region(
+        'us-east-1',
+        aws_access_key_id='AKIAIPCCURMQDHIB32HQ',
+        aws_secret_access_key='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')
 
 
 def lambda_handler(event, context):
@@ -70,4 +53,9 @@ def lambda_handler(event, context):
             {"_id": ObjectId(event["aid"])},
             {"status": "success"}
         )
+        verificationconn.send_email(
+        'nachi.2605@gmail.com',
+        'Verify your email',
+        'Enter the Lambda function here',
+        [event['username']])
         return " Successful Registration"
