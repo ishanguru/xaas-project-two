@@ -53,7 +53,7 @@ class ItemHandler {
                 Object.assign(token, tokenItems);
                 $.ajax({
                     type: "POST",
-                    url: "https://b98im1pkw9.execute-api.us-east-1.amazonaws.com/payment",
+                    url: "https://ec2-52-34-67-202.us-west-2.compute.amazonaws.com/payment",
                     headers: {"Authorization": "JWT " + that.accountHandler.jwt_token},
                     data: JSON.stringify(Object.assign(token, {"jwt": that.accountHandler.jwt_token})),
                     success: function (data) {

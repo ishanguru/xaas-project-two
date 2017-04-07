@@ -29,7 +29,7 @@ function pollCharge(count) {
 
     $.ajax({
         type: "POST",
-        url: "https://b98im1pkw9.execute-api.us-east-1.amazonaws.com/getpayment",
+        url: "https://ec2-52-34-67-202.us-west-2.compute.amazonaws.com/getpayment",
         data: JSON.stringify(data),
         contentType: "application/json; charset=utf-8",
         success: function(reply) {
