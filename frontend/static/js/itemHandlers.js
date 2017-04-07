@@ -51,9 +51,10 @@ class ItemHandler {
             locale: configAttributes["locale"],
             token: function (token) {
                 Object.assign(token, tokenItems);
+                token["method"] = "charge";
                 $.ajax({
                     type: "POST",
-                    url: "http://ec2-52-34-67-202.us-west-2.compute.amazonaws.com:8080/payment",
+                    url: "https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/orchestratorV2/ui-api",
                     headers: {"Authorization": "JWT " + that.accountHandler.jwt_token},
                     data: JSON.stringify(Object.assign(token, {"jwt": that.accountHandler.jwt_token})),
                     success: function (data) {
