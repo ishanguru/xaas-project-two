@@ -26,10 +26,10 @@ function pollCharge(count) {
     var data = {};
     data["jwt"] = accountHandler.jwt_token;
     data["type"] = "chargeQuery";
-
+    console.log('ISHAN');
     $.ajax({
         type: "POST",
-        url: "http://ec2-52-34-67-202.us-west-2.compute.amazonaws.com/getpayment",
+        url: "http://ec2-52-34-67-202.us-west-2.compute.amazonaws.com:8080/getpayment",
         data: JSON.stringify(data),
         contentType: "application/json; charset=utf-8",
         success: function(reply) {
