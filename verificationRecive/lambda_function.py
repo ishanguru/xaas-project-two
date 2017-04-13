@@ -12,7 +12,6 @@ verificationconn = boto.ses.connect_to_region(
     aws_secret_access_key='')
 
 def lambda_handler(event, context):
-    return event
     userId = event["params"]["path"]["userId"]
     if userId[0] == '"' and userId[-1] == '"':
         userId = userId[1:-1]
