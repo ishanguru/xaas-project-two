@@ -27,7 +27,7 @@ function handleLogin(formData) {
 function handleSignup(formData) { //new acccount
     formData["method"] = "signup";
     formData["username"] = formData["Email"];
-    $('#signUpModal').modal('hide')
+    $('#signUpModal').modal('hide');
     $.ajax({
         type: "POST",
         url: 'https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/orchestratorV2/ui-api',

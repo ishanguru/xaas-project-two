@@ -13,14 +13,15 @@ verificationconn = boto.ses.connect_to_region(
          aws_secret_access_key='')
 
 def lambda_handler(event, context):
-    verification = event["username"]
-    current_status = connectdb.signupAttempts.find_one({"_id": ObjectId(event["aid"])})
-    print (current_status)
-    if (current_status["status"] == "undefined"):
+    print "EVENT"
+    print event
+    if (event["verifymail"]["id"] != "DONTSENDANEMAIL"):
+        verification = event["verifymail"]["username"]
+
         verificationconn.send_email(
              'nachi.2605@gmail.com',
              'Verify your email PLEASE.',
-             'https://7mdamwt4jg.execute-api.us-east-1.amazonaws.com/prod2/' + event["_id"] ,
+             'https://7mdamwt4jg.execute-api.us-east-1.amazonaws.com/prod2/' + event["verifymail"]["id"] ,
              [verification])
     else:
         return ("No sign up sucker")

@@ -35,8 +35,8 @@ def lambda_handler(event, context):
     if ("Records" in event):
         event = event["Records"][0]["Sns"]["Message"]
 
-    event = json.loads(str(event))
-
+    # event = json.loads(str(event))
+    verifymail = {"username": "DONTSENDANEMAIL", "id" : "DONTSENDANEMAIL"}
     existing_user = users.find_one({'name' : event["username"]})
     if existing_user:
         connectdb.signupAttempts.find_one_and_replace(
@@ -49,11 +49,11 @@ def lambda_handler(event, context):
         print (newuser)
         print('creating user for', event['username'] )
         hashpass = event['password']
-        users.insert({'name' : event['username'], 'password' : hashpass})
+        id = str(users.insert_one({'name' : event['username'], 'password' : hashpass}).inserted_id)
         # verificationconn.verify_email_address(event['username'])
         connectdb.signupAttempts.find_one_and_replace(
             {"_id": ObjectId(event["aid"])},
             {"status": "success"}
         )
-    verifymail = {"username": str(newuser)}
-    return (verifymail)
+        verifymail = {"username": str(newuser), "id": id}
+    return verifymail

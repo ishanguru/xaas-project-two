@@ -14,10 +14,15 @@ def lambda_handler(event, context):
         response = sns_client.publish(TopicArn='arn:aws:sns:us-east-1:648812771825:login', Message=str(json.dumps(event)))
         return aid
     elif method == "signup":
+        client = boto3.client('stepfunctions')
         connectdb = MongoClient('mongodb://user1:user1password@ds149040.mlab.com:49040/user_db')["user_db"]
         aid = str(connectdb.signupAttempts.insert_one({"status": "undefined"}).inserted_id);
         event["aid"] = aid
-        response = sns_client.publish(TopicArn='arn:aws:sns:us-east-1:648812771825:signup', Message=str(json.dumps(event)))
+        response = client.start_execution(
+            stateMachineArn='arn:aws:states:us-east-1:648812771825:stateMachine:HelloWorld098098',
+            name=aid,
+            input=str(json.dumps(event))
+        )
         return aid
     elif method == "charge":
         encoded = event["jwt"]
