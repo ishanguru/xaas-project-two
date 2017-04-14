@@ -58,7 +58,7 @@ class ItemHandler {
                     headers: {"Authorization": "JWT " + that.accountHandler.jwt_token},
                     data: JSON.stringify(Object.assign(token, {"jwt": that.accountHandler.jwt_token})),
                     success: function (data) {
-                        startPollCharge();
+                        startPollCharge(data);
                     },
                     error: function (data) {
                         alert("You must be logged in!");
