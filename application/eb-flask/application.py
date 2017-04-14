@@ -81,7 +81,7 @@ def register():
             users = mongo.db.users
             existing_user = users.find_one({'name' : request.form['inputEmail']})
         except:
-            print "failed to find user"
+            print ("failed to find user")
 
         if existing_user is None:
             print('creating user')
@@ -120,7 +120,7 @@ def payment():
     try:
         tokend = jwt.decode(jwtToken, application.config.get('SECRET_KEY'), algorithm= 'HS256')
     except Exception as e:
-        print e
+        print (e)
         return render_template('login.html')
 
     cartTotal = float(request.form['cartTotal'])

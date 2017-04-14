@@ -8,8 +8,8 @@ db = connectdb
 
 verificationconn = boto.ses.connect_to_region(
         'us-east-1',
-        aws_access_key_id='',
-        aws_secret_access_key='')
+        aws_access_key_id='AKIAIPCCURMQDHIB32HQ',
+        aws_secret_access_key='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')
 
 def lambda_handler(event, context):
     verification = event["username"]
