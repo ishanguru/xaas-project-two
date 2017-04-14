@@ -27,8 +27,6 @@ function pollCharge(count,info) {
     data["jwt"] = accountHandler.jwt_token;
     data["type"] = "chargeQuery";
     data["aid"] = info;
-    console.log(data["aid"]);
-    console.log('ISHAN');
     $.ajax({
         type: "GET",
         url: "http://ec2-52-54-78-13.compute-1.amazonaws.com:8080/getpayment",
@@ -67,9 +65,9 @@ function pollLogin(count, info) {
         contentType: "application/json; charset=utf-8",
         success: function(reply) {
             reply = JSON_stringify(reply, true);
-            reply = JSON.parse(reply)
+            reply = JSON.parse(reply);
             if (reply["status"] === "success") {
-                console.log("success")
+                console.log("success");
               accountHandler.jwt_token = reply.access_token;
               accountHandler.logIn(info.username);
               processingHandler.updateStatus("success", "You are logged in. Now buy something or get out!")
@@ -103,7 +101,7 @@ function pollSignup(count, info) {
         success: function(data) {
             if (data["status"] === "success") {
               delete info["passwordCheck"];
-              handleLogin(info);
+              processingDisplayHandler.success("Check your email buddy.")
             } else {
                 handleFailure(count,data)
             }
