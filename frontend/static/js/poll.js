@@ -29,7 +29,7 @@ function pollCharge(count) {
     console.log('ISHAN');
     $.ajax({
         type: "POST",
-        url: "http://ec2-52-34-67-202.us-west-2.compute.amazonaws.com:8080/getpayment",
+        url: "http://ec2-52-54-78-13.compute-1.amazonaws.com:8080/getpayment",
         data: JSON.stringify(data),
         contentType: "application/json; charset=utf-8",
         success: function(reply) {
