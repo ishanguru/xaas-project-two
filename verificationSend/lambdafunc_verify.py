@@ -13,39 +13,15 @@ verificationconn = boto.ses.connect_to_region(
 
 def lambda_handler(event, context):
     verification = event["username"]
-    # gmail_user = 'tradewizardmailing@gmail.com'
-    # gmail_pwd = 'ILOVEASE2'
-    # FROM = 'tradewizardmailing@gmail.com'
-    # TO = verification
-    # SUBJECT = 'T.'
-    # TEXT = 'How are we doing today'
-    # message = "Sending" + TEXT
-    #
-    # print (verification)
-    # try:
-    #     server = smtplib.SMTP("smtp.googlemail.com", 465)
-    #     server.ehlo()
-    #     server.starttls()
-    #     server.startssl()
-    #     server.login(gmail_user, gmail_pwd)
-    #     server.sendmail(FROM, TO, message)
-    #     server.close()
-    #     print ('successfully sent the mail')
-    # except:
-    #     print ("failed to send mail")
-
-
-    # requests.post(
-    #         "https://api.mailgun.net/v3/sandbox451a8c8f4bd046389400e6ed13801b32.mailgun.org/messages",
-    #         auth=("api", "key-229420542ec1e27b172be8315555b8fd"),
-    #         data={"from": "Mailgun Sandbox <nachi.2605@gmail.com>",
-    #               "to": verification,
-    #               "subject": "Verification Email",
-    #               "text": "Congratulations Nachiket, you just sent an email with Mailgun!  You are truly awesome! NOT."})
-
-    verificationconn.send_email(
+    current_status = connectdb.signupAttempts.find_one({"_id": ObjectId(event["aid"])})
+    if (current_status["status"] == "undefined"):
+        verificationconn.send_email(
              'nachi.2605@gmail.com',
              'Verify your email PLEASE.',
              'Enter the Lambda function here',
              [verification])
+    else:
+        return ("No sign up. You've done it already.")
+
+
     return ("Verification mail has been sent")
