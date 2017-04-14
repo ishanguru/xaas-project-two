@@ -42,7 +42,7 @@ def lambda_handler(event, context):
     event = json.loads(str(event))
 
     login_user = users.find_one({'name': event['username'], 'password': event['password']})
-    if login_user:
+    if login_user and login_user["status"] and login_user["status"]=="verified":
         connectdb.loginAttempts.find_one_and_replace(
             {"_id": ObjectId(event["aid"])},
             {"status": "success"}
@@ -54,22 +54,3 @@ def lambda_handler(event, context):
             {"status": "error"}
         )
         return "Invalid Username/Password"
-    # if login_user:
-    #     if event['username'] == login_user['name']:
-    #         if event['password'] == login_user['password']:
-    #             for a in verifiedemails.values():
-    #                 for b in a.values():
-    #                     for email in b.values():
-    #                         for i in email:
-    #                             if (i == event['username']):
-    #                                 connectdb.loginAttempts.find_one_and_replace(
-    #                                     {"_id": ObjectId(event["aid"])},
-    #                                     {"status": "success"}
-    #                                 )
-    #                                 return "Successful login"
-    #
-    # connectdb.loginAttempts.find_one_and_replace(
-    #     {"_id": ObjectId(event["aid"])},
-    #     {"status": "error"}
-    # )
-    # return "Invalid Username/Password"
