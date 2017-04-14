@@ -44,7 +44,8 @@ function pollCharge(count,info) {
         },
         error: function (reply) {
             handleFailure(count,reply)
-        }
+        },
+        timeout: 10000
     });
 }
 
@@ -60,6 +61,8 @@ function pollLogin(count, info) {
         }
     }
 
+    info["email"] = info["username"];
+
     $.ajax({
         type: "POST",
         url: "https://zk84kq0q36.execute-api.us-east-1.amazonaws.com/prod/login",
@@ -70,7 +73,7 @@ function pollLogin(count, info) {
             reply = JSON.parse(reply);
             if (reply["status"] === "success") {
                 console.log("success");
-              accountHandler.jwt_token = reply.access_token;
+              accountHandler.jwt_token = reply.jwt;
               accountHandler.logIn(info.username);
               processingHandler.updateStatus("success", "You are logged in. Now buy something or get out!")
             } else {

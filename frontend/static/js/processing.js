@@ -42,12 +42,12 @@ processingHandler.updateStatus = function (status, msg) {
 processingHandler.checkForOnGoingProcessWithWarning =
     function (warning) {
         if (!processingHandler.onGoingProcess) {
-            return;
+            return false;
         }
         if (warning != undefined) {
             alert(warning);
-            return;
+            return true;
         }
         alert("Wait for ongoing process!")
-        return;
+        return true;
     };
