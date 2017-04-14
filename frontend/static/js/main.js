@@ -67,6 +67,7 @@ $(document).ready(function() {
 
     
     $( "#logoutNavElement" ).click(function() {
+        processingHandler.updateStatus("success","You logged out.");
         accountHandler.logOut();
     });
 });
