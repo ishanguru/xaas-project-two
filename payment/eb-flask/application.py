@@ -7,6 +7,9 @@ from pymongo import MongoClient
 from datetime import timedelta
 import json
 import requests
+from bson.objectid import ObjectId
+from bson import json_util
+import yaml
 
 stripe_keys = {
   'secret_key': 'sk_test_Hrqp4whe1ZsCTyLzol7jth8v',
@@ -31,26 +34,24 @@ def snsFunction():
 
     
     headers = request.headers.get('X-Amz-Sns-Message-Type')
-    # print(notification)
 
     if headers == 'SubscriptionConfirmation' and 'SubscribeURL' in notification:
         url = requests.get(notification['SubscribeURL'])
-        # print(url) 
     elif headers == 'Notification':
-        chargeStatus = charge(notification)
+        temp = json.loads(str(notification['Message']))
+        charge(temp)
     else: 
         print("Headers not specified")
-
-    if chargeStatus:
-        return "Payment Processed\n"
         
     return "SNS Notification Recieved\n"  
 
-@application.route('/getpayment', methods=['GET'])
+@application.route('/getpayment', methods=['GET', 'POST'])
 def getPayment():
-    caid = request.form["aid"]
+    temp = yaml.load(request.data)
+    caid = temp["aid"]
     paymentObject = connectdb.caids.find_one({"_id": ObjectId(str(caid))})
-    return paymentObject
+    toSend = json.dumps(paymentObject, default=json_util.default)
+    return toSend
 
 #stripe
 @application.route('/payment', methods=['POST'])
@@ -90,7 +91,7 @@ def charge(notification):
 
     # send order to user info microservice to store stuff into db
     status = request.post('https://ec2-52-15-159-218.us-east-2.compute.amazonaws.com:5000/order', json=transaction)
-
+    print "COOL STUFF BRO"
     # return "COOL STUFF BRO"
     return status
 
