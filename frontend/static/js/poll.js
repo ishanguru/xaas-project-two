@@ -27,14 +27,16 @@ function pollCharge(count,info) {
     data["jwt"] = accountHandler.jwt_token;
     data["type"] = "chargeQuery";
     data["aid"] = info;
+    console.log("asdf");
     $.ajax({
-        type: "GET",
+        type: "POST",
         url: "http://ec2-52-54-78-13.compute-1.amazonaws.com:8080/getpayment",
         data: JSON.stringify(data),
         contentType: "application/json; charset=utf-8",
         success: function(reply) {
+            reply = JSON.parse(reply);
             console.log(reply);
-            if (data["status"] === "success") {
+            if (reply["status"] === "success") {
                 processingHandler.updateStatus("success", "That operation worked!");
             } else {
                 handleFailure(count,reply)
