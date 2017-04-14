@@ -1,6 +1,6 @@
-function startPollCharge() {
+function startPollCharge(info) {
     processingHandler.updateStatus("waiting",null);
-    pollCharge(0);
+    pollCharge(0, info);
 }
 
 function startPollLogin(info) {
@@ -13,11 +13,11 @@ function startPollSignup(info) {
     pollSignup(0, info);
 }
 
-function pollCharge(count) {
+function pollCharge(count,info) {
 
     function handleFailure(count, data) {
         if (count <= 4) { //try again
-            var timeoutID = window.setTimeout(pollCharge(count + 1), 200);
+            var timeoutID = window.setTimeout(pollCharge(count + 1,info), 200);
         } else  {
             //todo: probably want to send this info somewhere
             processingHandler.updateStatus("error", "That operation failed please try again.");
@@ -26,15 +26,17 @@ function pollCharge(count) {
     var data = {};
     data["jwt"] = accountHandler.jwt_token;
     data["type"] = "chargeQuery";
-    console.log('ISHAN');
+    data["aid"] = info;
+    console.log("asdf");
     $.ajax({
         type: "POST",
         url: "http://ec2-52-54-78-13.compute-1.amazonaws.com:8080/getpayment",
         data: JSON.stringify(data),
         contentType: "application/json; charset=utf-8",
         success: function(reply) {
-            console.log(reply)
-            if (data["status"] === "success") {
+            reply = JSON.parse(reply);
+            console.log(reply);
+            if (reply["status"] === "success") {
                 processingHandler.updateStatus("success", "That operation worked!");
             } else {
                 handleFailure(count,reply)
@@ -65,9 +67,9 @@ function pollLogin(count, info) {
         contentType: "application/json; charset=utf-8",
         success: function(reply) {
             reply = JSON_stringify(reply, true);
-            reply = JSON.parse(reply)
+            reply = JSON.parse(reply);
             if (reply["status"] === "success") {
-                console.log("success")
+                console.log("success");
               accountHandler.jwt_token = reply.access_token;
               accountHandler.logIn(info.username);
               processingHandler.updateStatus("success", "You are logged in. Now buy something or get out!")
@@ -101,7 +103,7 @@ function pollSignup(count, info) {
         success: function(data) {
             if (data["status"] === "success") {
               delete info["passwordCheck"];
-              handleLogin(info);
+              processingDisplayHandler.success("Check your email buddy.")
             } else {
                 handleFailure(count,data)
             }

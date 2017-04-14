@@ -43,8 +43,10 @@ def lambda_handler(event, context):
             {"_id": ObjectId(event["aid"])},
             {"status": "error"}
         )
-        return 'That inputEmail already exists!'
+        return ('That inputEmail already exists!')
     else:
+        newuser = event['username']
+        print (newuser)
         print('creating user for', event['username'] )
         hashpass = event['password']
         users.insert({'name' : event['username'], 'password' : hashpass})
@@ -53,9 +55,5 @@ def lambda_handler(event, context):
             {"_id": ObjectId(event["aid"])},
             {"status": "success"}
         )
-        verificationconn.send_email(
-        'nachi.2605@gmail.com',
-        'Verify your email',
-        'Enter the Lambda function here',
-        [event['username']])
-        return " Successful Registration"
+    verifymail = {"username": str(newuser)}
+    return (verifymail)

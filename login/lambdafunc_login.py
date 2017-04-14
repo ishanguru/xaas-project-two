@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+import jwt
 import boto.ses
 import boto.sns
 import json
@@ -24,6 +25,13 @@ def lambda_handler(event, context):
         dictToReturn = {}
         dictToReturn["status"] = str(matchingAttempt["status"])
         dictToReturn["aid"] =str(matchingAttempt["_id"])
+
+        #get username and password
+        password = connectdb.users.find_one({"name": str(event["email"])})["password"]
+
+        if dictToReturn["status"] == "success":
+            userJwt = jwt.encode({'email' : event["email"],'password' : password}, 'secret', algorithm='HS256')
+            dictToReturn["jwt"] = userJwt
         return dictToReturn
 
     users = db.users

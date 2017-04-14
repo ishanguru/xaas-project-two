@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 import boto3
 import json
+import jwt
 
 
 def lambda_handler(event, context):
@@ -19,11 +20,24 @@ def lambda_handler(event, context):
         response = sns_client.publish(TopicArn='arn:aws:sns:us-east-1:648812771825:signup', Message=str(json.dumps(event)))
         return aid
     elif method == "charge":
-        connectdb = MongoClient('mongodb://user1:user1password@ds149030.mlab.com:49030/charge_db')["charge_db"]
-        aid = str(connectdb.caids.insert_one({"status": "undefined"}).inserted_id);
-        event["aid"] = aid
-        response = sns_client.publish(TopicArn='arn:aws:sns:us-east-1:648812771825:payments', Message=str(json.dumps(event)))
-        return aid
+        encoded = event["jwt"]
+        decoded = jwt.decode(encoded, 'secret', algorithms=['HS256'])
+        email = decoded["email"]
+        password = decoded["password"]
+        user_db = MongoClient('mongodb://user1:user1password@ds149040.mlab.com:49040/user_db')["user_db"]
+        # users = user_db.users
+        print("EMAIL")
+        print(email)
+        user = user_db.users.find_one({"name": email})
+        if (user["password"] == password):
+            chargeDb = MongoClient('mongodb://user1:user1password@ds149030.mlab.com:49030/charge_db')["charge_db"]
+            aid = str(chargeDb.caids.insert_one({"status": "undefined"}).inserted_id);
+            event["aid"] = aid
+            response = sns_client.publish(
+                TopicArn='arn:aws:sns:us-east-1:648812771825:payments',
+                Message=str(json.dumps(event)))
+            return aid
+        return "failure"
     else:
         return "not supported"
     return str(event)
