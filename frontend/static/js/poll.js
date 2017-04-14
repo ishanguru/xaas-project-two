@@ -1,6 +1,6 @@
-function startPollCharge() {
+function startPollCharge(info) {
     processingHandler.updateStatus("waiting",null);
-    pollCharge(0);
+    pollCharge(0, info);
 }
 
 function startPollLogin(info) {
@@ -13,11 +13,11 @@ function startPollSignup(info) {
     pollSignup(0, info);
 }
 
-function pollCharge(count) {
+function pollCharge(count,info) {
 
     function handleFailure(count, data) {
         if (count <= 4) { //try again
-            var timeoutID = window.setTimeout(pollCharge(count + 1), 200);
+            var timeoutID = window.setTimeout(pollCharge(count + 1,info), 200);
         } else  {
             //todo: probably want to send this info somewhere
             processingHandler.updateStatus("error", "That operation failed please try again.");
@@ -26,9 +26,11 @@ function pollCharge(count) {
     var data = {};
     data["jwt"] = accountHandler.jwt_token;
     data["type"] = "chargeQuery";
+    data["aid"] = info;
+    console.log(data["aid"]);
     console.log('ISHAN');
     $.ajax({
-        type: "POST",
+        type: "GET",
         url: "http://ec2-52-54-78-13.compute-1.amazonaws.com:8080/getpayment",
         data: JSON.stringify(data),
         contentType: "application/json; charset=utf-8",
