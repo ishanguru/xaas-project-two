@@ -15,8 +15,9 @@ def lambda_handler(event, context):
     userId = event["params"]["path"]["userId"]
     if userId[0] == '"' and userId[-1] == '"':
         userId = userId[1:-1]
-    users.update_one(
+    connectdb.signupAttempts.find_one_and_replace(
         {"_id": ObjectId(userId)},
         {"status": "verified"}
     )
+
     return "registered!"
