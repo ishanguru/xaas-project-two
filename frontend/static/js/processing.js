@@ -30,7 +30,8 @@ var processingHandler = {
     displayHandler : processingDisplayHandler,
     get onGoingProcess() {
         return !(processingHandler.status == "success" ||
-               processingHandler.status == "clear");
+               processingHandler.status == "clear" ||
+                processingHandler.status == "error");
     }
 };
 
