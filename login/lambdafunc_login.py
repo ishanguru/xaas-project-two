@@ -21,15 +21,14 @@ def lambda_handler(event, context):
     #if polling
     if "type" in event and event["type"] == "loginQuery":
         matchingAttempt = connectdb.loginAttempts.find_one({"_id": ObjectId(event["aid"])})
-        print(type(matchingAttempt))
+
         dictToReturn = {}
         dictToReturn["status"] = str(matchingAttempt["status"])
-        dictToReturn["aid"] =str(matchingAttempt["_id"])
-
-        #get username and password
-        password = connectdb.users.find_one({"name": str(event["email"])})["password"]
+        dictToReturn["aid"] = str(matchingAttempt["_id"])
 
         if dictToReturn["status"] == "success":
+            # get username and password
+            password = connectdb.users.find_one({"name": str(event["email"])})["password"]
             userJwt = jwt.encode({'email' : event["email"],'password' : password}, 'secret', algorithm='HS256')
             dictToReturn["jwt"] = userJwt
         return dictToReturn
