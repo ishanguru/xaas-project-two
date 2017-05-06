@@ -7,7 +7,7 @@ function handleLogin(formData) {
     console.log("login");
     $.ajax({
         type: "POST",
-        url: 'https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/exp4/login',
+        url: 'https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/exp5/login',
         data: JSON.stringify(formData),
         dataType : "json",
         contentType: "application/json; charset=utf-8",
@@ -31,7 +31,7 @@ function handleSignup(formData) { //new acccount
     $('#signUpModal').modal('hide');
     $.ajax({
         type: "POST",
-        url: 'https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/exp4/signup',
+        url: 'https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/exp5/signup',
         dataType : "json",
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(formData),
