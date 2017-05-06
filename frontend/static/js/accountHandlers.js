@@ -4,9 +4,10 @@ function handleLogin(formData) {
         formData["username"] = formData["Email"];
     }
     $('#loginModal').modal('hide');
+    console.log("login");
     $.ajax({
         type: "POST",
-        url: 'https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/orchestratorV2/ui-api',
+        url: 'https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/exp3/login',
         data: JSON.stringify(formData),
         dataType : "json",
         contentType: "application/json; charset=utf-8",

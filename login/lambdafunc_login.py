@@ -40,6 +40,9 @@ def lambda_handler(event, context):
 
     event = json.loads(str(event))
 
+    print "This is the event!"
+    print event
+
     login_user = users.find_one({'name': event['username'], 'password': event['password']})
     if login_user and login_user["status"] and login_user["status"]=="verified":
         connectdb.loginAttempts.find_one_and_replace(

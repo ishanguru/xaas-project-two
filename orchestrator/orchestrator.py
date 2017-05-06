@@ -5,13 +5,29 @@ import jwt
 
 
 def lambda_handler(event, context):
-    method = event["method"]
+    # if 'context' in event:
+    #     print("hey")
+    # else:
+    #     return "YOURE DOING SOMETHING WRONG!"
+    print ("THIS IS THE EVENT!")
+    print (event)
+    print("THESE ARE THE KEYS")
+    print(event.keys())
+    print("THESE ARE THE CONTEXT KEYS")
+    print(event['context'].keys())
+    print("THIS IS THE resource-path")
+    print(event['context']['resource-path'])
+
+
+
+    method = event['context']['resource-path']
     sns_client = boto3.client('sns')
-    if method == "login":
+    if method == "/login":
         connectdb = MongoClient('mongodb://user1:user1password@ds149040.mlab.com:49040/user_db')["user_db"]
         aid = str(connectdb.loginAttempts.insert_one({"status" : "undefined"}).inserted_id);
         event["aid"] = aid
-        response = sns_client.publish(TopicArn='arn:aws:sns:us-east-1:648812771825:login', Message=str(json.dumps(event)))
+        event["body-json"]["aid"] = aid
+        response = sns_client.publish(TopicArn='arn:aws:sns:us-east-1:648812771825:login', Message=str(json.dumps(event["body-json"])))
         return aid
     elif method == "signup":
         client = boto3.client('stepfunctions')
@@ -44,5 +60,6 @@ def lambda_handler(event, context):
             return aid
         return "failure"
     else:
+        # return event
         return "not supported"
     return str(event)
