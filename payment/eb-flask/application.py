@@ -11,6 +11,8 @@ from bson.objectid import ObjectId
 from bson import json_util
 import yaml
 
+# Need to include import stuff for SQS
+
 stripe_keys = {
   'secret_key': 'sk_test_Hrqp4whe1ZsCTyLzol7jth8v',
   'publishable_key': 'pk_test_mLVxfSZ0XoplPi6EppPDVic9'
@@ -23,6 +25,8 @@ application.debug = True
 application.config['SECRET_KEY'] = 'super-secret'
 
 connectdb = MongoClient('mongodb://user1:user1password@ds149030.mlab.com:49030/charge_db')["charge_db"]
+
+# Set up SQS connection to queue
 
 @application.route('/sns', methods = ['GET', 'POST', 'PUT'])
 def snsFunction():
@@ -89,7 +93,10 @@ def charge(notification):
 
     transaction = jsonify(result)
 
+    # Since we have the caid, I can get the object and add it to the queue right here, so this is the object that is retrieved upon poll
+
     # send order to user info microservice to store stuff into db
+    # add order to user info microservice queue
     status = request.post('https://ec2-52-15-159-218.us-east-2.compute.amazonaws.com:5000/order', json=transaction)
     print "COOL STUFF BRO"
     # return "COOL STUFF BRO"
