@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 import re
-
+import jwt
 
 def lambda_handler(event, context):
     print("Client token: " + event['authorizationToken'])
@@ -46,9 +46,9 @@ def lambda_handler(event, context):
     policy.region = tmp[3]
     policy.stage = apiGatewayArnTmp[1]
 
-
-
-    encoded = userEventInfo["jwt"]
+    print("event")
+    print(event)
+    encoded = event['authorizationToken']
     decoded = jwt.decode(encoded, 'secret', algorithms=['HS256'])
     email = decoded["email"]
     password = decoded["password"]
@@ -58,9 +58,9 @@ def lambda_handler(event, context):
     print(email)
     user = user_db.users.find_one({"name": email})
     if (user["password"] == password):
-        policy.denyAllMethods()
-    else:
         policy.allowAllMethods()
+    else:
+        policy.denyAllMethods()
 
 
     #policy.allowMethod(HttpVerb.GET, '/pets/*')
