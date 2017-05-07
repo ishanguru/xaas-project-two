@@ -1,5 +1,6 @@
 class ItemHandler {
-    constructor(amount, name, description, accountHandler, elementId, processingHandler) {
+    constructor(amount, name, description, accountHandler, elementId, processingHandler, id) {
+        this.id = id;
         this.amount = amount;
         this.name = name;
         this.description = description;

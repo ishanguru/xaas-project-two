@@ -58,12 +58,6 @@ def lambda_handler(event, context):
     print(email)
     user = user_db.users.find_one({"name": email})
     if (user["password"] == password):
-        chargeDb = MongoClient('mongodb://user1:user1password@ds149030.mlab.com:49030/charge_db')["charge_db"]
-        aid = str(chargeDb.caids.insert_one({"status": "undefined"}).inserted_id);
-        userEventInfo["aid"] = aid
-        response = sns_client.publish(
-        TopicArn='arn:aws:sns:us-east-1:648812771825:payments',
-        Message=str(json.dumps(userEventInfo)))
         policy.denyAllMethods()
     else:
         policy.allowAllMethods()

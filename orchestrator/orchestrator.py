@@ -36,7 +36,7 @@ def lambda_handler(event, context):
             input=str(json.dumps(userEventInfo))
         )
         return aid
-    elif method == "/charge":
+    elif method == "/order":
         chargeDb = MongoClient('mongodb://user1:user1password@ds149030.mlab.com:49030/charge_db')["charge_db"]
         aid = str(chargeDb.caids.insert_one({"status": "undefined"}).inserted_id);
         userEventInfo["aid"] = aid
