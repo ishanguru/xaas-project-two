@@ -115,11 +115,15 @@ def charge(notification):
 
     # Since we have the caid, I can get the object and add it to the queue right here, so this is the object that is retrieved upon poll
 
-    # paymentsQueue = sqs_queue.getQueueName('ordersQueue')
-    # paymentObject = connectdb.caids.find_one({"_id": ObjectId(str(caid))})
+    paymentsQueueUrl = sqs_queue.get_queue_url(QueueName='ordersQueue')
+    paymentObject = connectdb.caids.find_one({"_id": ObjectId(str(caid))})
     
-    # print paymentsqueue
-    # print json.loads(paymentObject)
+    queueResponse = sqs_queue.send_message(
+        QueueUrl=paymentsQueueUrl, 
+        Message=json.loads(paymentObject)
+    )
+    print paymentsqueue
+    print json.loads(paymentObject)
 
     # send order to user info microservice to store stuff into db
     # add order to user info microservice queue
@@ -128,11 +132,11 @@ def charge(notification):
     # return "COOL STUFF BRO"
     return status
 
-@application.route('/sqs', methods=['GET'])
-def getQueue():
-    paymentsQueue = sqs_queue.get_queue_url(QueueName='ordersQueue')
-    print paymentsQueue
-    return str(paymentsQueue)
+# @application.route('/sqs', methods=['GET'])
+# def getQueue():
+#     paymentsQueue = sqs_queue.get_queue_url(QueueName='ordersQueue')
+#     print paymentsQueue
+#     return str(paymentsQueue)
 
 # run the app.
 if __name__ == "__main__":
