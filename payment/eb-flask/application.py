@@ -120,7 +120,13 @@ def charge(notification):
     
     queueResponse = sqs_queue.send_message(
         QueueUrl=paymentsQueueUrl, 
-        Message=json.loads(paymentObject)
+        Message=json.loads(paymentObject),
+        MessageAttributes={
+            'caid': {
+                'StringValue': str(caid),
+                'DataType': 'string'
+            }
+        }
     )
     print paymentsqueue
     print json.loads(paymentObject)

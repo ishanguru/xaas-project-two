@@ -24,6 +24,5 @@ except Exception as e:
 def payments_handler(event, context):
 	queue_url = sqs_queue.get_queue_url(QueueName='ordersQueue')
 	sqs_queue.receive_message(
-		QueueUrl=queue_url,
-		
+		QueueUrl=queue_url
 	)	
