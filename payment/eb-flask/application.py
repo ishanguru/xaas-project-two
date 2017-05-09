@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify,app, session
 import stripe
 import os
 import boto3
-from sqs_services import SQSServices
+# from sqs_services import SQSServices
 from pymongo import MongoClient
 from datetime import timedelta
 import json
@@ -11,11 +11,27 @@ from bson.objectid import ObjectId
 from bson import json_util
 import yaml
 from boto3 import Session
+import ConfigParser
+
+config = ConfigParser.ConfigParser()
+config.readfp(open(r'./configurations.txt'))
+
+awsAccessKey=config.get('AWS Keys', 'awsAccessKeyId')
+awsSecretKey=config.get('AWS Keys', 'awsSecretAccessKeyId')
+awsRegion=config.get('AWS Keys', 'awsRegion')
+stripeSecretKey=config.get('STRIPE Keys', 'stripeSecretKey')
+stripePublishableKey=config.get('STRIPE Keys', 'stripePublishableKey')
 
 stripe_keys = {
-  'secret_key': 'sk_test_Hrqp4whe1ZsCTyLzol7jth8v',
-  'publishable_key': 'pk_test_mLVxfSZ0XoplPi6EppPDVic9'
+  'secret_key': stripeSecretKey,
+  'publishable_key': stripePublishableKey
 }
+
+aws_session = Session(
+    aws_access_key_id=awsAccessKey,
+    aws_secret_access_key=awsSecretKey,
+    region_name=awsRegion,
+)
 
 stripe.api_key = stripe_keys['secret_key']
 
@@ -27,8 +43,7 @@ connectdb = MongoClient('mongodb://user1:user1password@ds149030.mlab.com:49030/c
 
 # Set up SQS connection to queue
 try:
-    sqs_queue = SQSServices()
-    sqs = boto3.resource('sqs')
+    sqs_queue = aws_session.client('sqs')
 except Exception as e:
     print("Queue already exists")
 
@@ -100,8 +115,8 @@ def charge(notification):
 
     # Since we have the caid, I can get the object and add it to the queue right here, so this is the object that is retrieved upon poll
 
-    paymentsQueue = sqs_queue.getQueueName('ordersQueue')
-    paymentObject = connectdb.caids.find_one({"_id": ObjectId(str(caid))})
+    # paymentsQueue = sqs_queue.getQueueName('ordersQueue')
+    # paymentObject = connectdb.caids.find_one({"_id": ObjectId(str(caid))})
     
     # print paymentsqueue
     # print json.loads(paymentObject)
@@ -115,8 +130,7 @@ def charge(notification):
 
 @application.route('/sqs', methods=['GET'])
 def getQueue():
-    account = str(6488-1277-1825)
-    paymentsQueue = sqs_queue.getQueueName('ordersQueue', account)
+    paymentsQueue = sqs_queue.get_queue_url(QueueName='ordersQueue')
     print paymentsQueue
     return str(paymentsQueue)
 
