@@ -22,7 +22,19 @@ except Exception as e:
     print("Queue already exists")
 
 def payments_handler(event, context):
+	current_caid = event['caid']
+	print current_caid
+
 	queue_url = sqs_queue.get_queue_url(QueueName='ordersQueue')
-	sqs_queue.receive_message(
-		QueueUrl=queue_url
-	)	
+	messages = sqs_queue.receive_message(
+		QueueUrl=queue_url,
+		AttributeNames=['caid']
+	)
+	for message in messages:
+		caid = message.message_attributes.get('caid').get('StringValue')
+		if caid == current_caid:
+			body = message['body']
+			message.delete()
+			return body
+
+	return "Payment not processed"
