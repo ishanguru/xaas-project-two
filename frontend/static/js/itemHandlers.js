@@ -1,5 +1,6 @@
 class ItemHandler {
-    constructor(amount, name, description, accountHandler, elementId, processingHandler) {
+    constructor(amount, name, description, accountHandler, elementId, processingHandler, id) {
+        this.id = id;
         this.amount = amount;
         this.name = name;
         this.description = description;
@@ -56,7 +57,7 @@ class ItemHandler {
                     type: "POST",
                     dataType : "json",
                     contentType: "application/json; charset=utf-8",
-                    url: "https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/exp4/charge",
+                    url: "https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/exp5/charge",
                     headers: {"Authorization": "JWT " + that.accountHandler.jwt_token},
                     data: JSON.stringify(Object.assign(token, {"jwt": that.accountHandler.jwt_token})),
                     success: function (data) {

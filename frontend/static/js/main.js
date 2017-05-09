@@ -14,7 +14,7 @@ $(document).ready(function() {
         "1597",
         accountHandler,
         'customButton1',
-        processingHandler
+        processingHandler, "1"
     );
 
     var handlerForItem2 = new ItemHandler(2098,
@@ -22,7 +22,7 @@ $(document).ready(function() {
         "20.98",
         accountHandler,
         'customButton2',
-        processingHandler
+        processingHandler, "2"
     );
 
 
