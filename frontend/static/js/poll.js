@@ -101,12 +101,10 @@ function pollSignup(count, info) {
     }
 
     $.ajax({
-        type: "POST",
-        url: "https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/prod/signup",
-        data: JSON.stringify(info),
-        contentType: "application/json; charset=utf-8",
+        type: "GET",
+        url: "https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/p3v1/users/" + info.aid,
         success: function(data) {
-            if (data["status"] === "success") {
+            if (data["name"]) {
               delete info["passwordCheck"];
               processingHandler.updateStatus("success", "Check your email buddy.")
             } else {

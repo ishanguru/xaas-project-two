@@ -12,10 +12,9 @@ db = connectdb
 def lambda_handler(event, context):
     # return "hello"
     # if polling
-    print "this is the event"
+    print
+    "this is the event"
     # return event
-    if not event:
-        return "no event :("
 
     if event and "loginid" in event:
         matchingAttempt = connectdb.loginAttempts.find_one({"_id": ObjectId(event["loginid"])})
