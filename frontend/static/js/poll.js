@@ -30,7 +30,7 @@ function pollCharge(count,info) {
     console.log(data);
     $.ajax({
         type: "POST",
-        url: "http://ec2-52-54-78-13.compute-1.amazonaws.com:8080/getpayment",
+        url: "https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com:8080/getpayment",
         data: JSON.stringify(data),
         contentType: "application/json; charset=utf-8",
         success: function(reply) {
@@ -64,15 +64,15 @@ function pollLogin(count, info) {
     info["email"] = info["username"];
 
     $.ajax({
-        type: "POST",
-        url: "https://zk84kq0q36.execute-api.us-east-1.amazonaws.com/prod/login",
-        data: JSON.stringify(info),
-        contentType: "application/json; charset=utf-8",
+        type: "GET",
+        url: "https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/p3v1/users/login/" + info.aid,
+        // data: JSON.stringify(info),
+        // contentType: "application/json; charset=utf-8",
         success: function(reply) {
             reply = JSON_stringify(reply, true);
             reply = JSON.parse(reply);
             console.log("reply");
-            console.log(reply)
+            console.log(reply);
             if (reply["status"] === "success") {
                 console.log("success");
               accountHandler.jwt_token = reply.jwt;
@@ -102,7 +102,7 @@ function pollSignup(count, info) {
 
     $.ajax({
         type: "POST",
-        url: "https://zk84kq0q36.execute-api.us-east-1.amazonaws.com/prod/signup",
+        url: "https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/prod/signup",
         data: JSON.stringify(info),
         contentType: "application/json; charset=utf-8",
         success: function(data) {

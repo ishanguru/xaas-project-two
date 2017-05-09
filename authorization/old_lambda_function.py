@@ -2,7 +2,6 @@ from __future__ import print_function
 
 import re
 import jwt
-from pymongo import MongoClient
 
 def lambda_handler(event, context):
     print("Client token: " + event['authorizationToken'])
@@ -47,8 +46,8 @@ def lambda_handler(event, context):
     policy.region = tmp[3]
     policy.stage = apiGatewayArnTmp[1]
 
-    print("event")
-    print(event)
+
+
     encoded = event['authorizationToken']
     decoded = jwt.decode(encoded, 'secret', algorithms=['HS256'])
     email = decoded["email"]
@@ -59,13 +58,7 @@ def lambda_handler(event, context):
     print(email)
     user = user_db.users.find_one({"name": email})
     if (user["password"] == password):
-        # policy.allowAllMethods()
-        policy.allowMethod(HttpVerb.POST, '/orders');
-        #for each id in the users orders
-
-        #    policy.allowMethod(HttpVerb.GET, '/orders/' + id);
-        policy.allowMethod(HttpVerb.GET, '/users/' + email);
-
+        policy.allowAllMethods()
     else:
         policy.denyAllMethods()
 

@@ -19,10 +19,11 @@ def lambda_handler(event, context):
     method = event['context']['resource-path']
     userEventInfo = event['body-json']
     sns_client = boto3.client('sns')
-    if method == "/login":
+    if method == "/users/login":
         connectdb = MongoClient('mongodb://user1:user1password@ds149040.mlab.com:49040/user_db')["user_db"]
         aid = str(connectdb.loginAttempts.insert_one({"status" : "undefined"}).inserted_id);
         userEventInfo["aid"] = aid
+        userEventInfo["type"] = "loginRequest"
         response = sns_client.publish(TopicArn='arn:aws:sns:us-east-1:648812771825:login', Message=str(json.dumps(userEventInfo)))
         return aid
     elif method == "/signup":
@@ -36,7 +37,7 @@ def lambda_handler(event, context):
             input=str(json.dumps(userEventInfo))
         )
         return aid
-    elif method == "/order":
+    elif method == "/charge":
         chargeDb = MongoClient('mongodb://user1:user1password@ds149030.mlab.com:49030/charge_db')["charge_db"]
         aid = str(chargeDb.caids.insert_one({"status": "undefined"}).inserted_id);
         userEventInfo["aid"] = aid
