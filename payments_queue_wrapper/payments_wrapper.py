@@ -23,8 +23,10 @@ except Exception as e:
 
 def payments_handler(event, context):
 	current_caid = event['caid']
-	print current_caid
+	result = payments_handler(current_caid)
+	return result
 
+def payments(current_caid):
 	queue_url = sqs_queue.get_queue_url(QueueName='ordersQueue')
 	messages = sqs_queue.receive_message(
 		QueueUrl=queue_url,
@@ -38,3 +40,4 @@ def payments_handler(event, context):
 			return body
 
 	return "Payment not processed"
+	

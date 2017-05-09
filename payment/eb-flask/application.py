@@ -81,8 +81,6 @@ def getPayment():
 @application.route('/payment', methods=['POST'])
 def charge(notification):
     # Amount in cents
-    print(notification)
-
     amount = notification["amount"]
     caid = notification["aid"]
     email = notification["email"]
@@ -110,26 +108,24 @@ def charge(notification):
     result['status'] = charge['status']
     result['amount'] = charge['amount']
     result['email'] = notification['email']
+    result['productId'] = notification['productId']
 
-    transaction = jsonify(result)
-
-    # Since we have the caid, I can get the object and add it to the queue right here, so this is the object that is retrieved upon poll
+    transaction = json.loads(result)
+    print(transaction)
 
     paymentsQueueUrl = sqs_queue.get_queue_url(QueueName='ordersQueue')
     paymentObject = connectdb.caids.find_one({"_id": ObjectId(str(caid))})
     
     queueResponse = sqs_queue.send_message(
         QueueUrl=paymentsQueueUrl, 
-        Message=json.loads(paymentObject),
+        MessageBody=paymentObject['QueueUrl'],
         MessageAttributes={
             'caid': {
                 'StringValue': str(caid),
-                'DataType': 'string'
+                'DataType': 'String'
             }
         }
     )
-    print paymentsqueue
-    print json.loads(paymentObject)
 
     # send order to user info microservice to store stuff into db
     # add order to user info microservice queue
