@@ -9,8 +9,8 @@ class SQSServices():
 	def createQueue(name):
 		return self.sqs.create_queue(QueueName=name)
 
-	def getQueueName(self, name):
-		queueName = self.sqs.get_queue_by_name(QueueName=name)
+	def getQueueName(self, name, account):
+		queueName = self.sqs.get_queue_by_name(QueueName=name, QueueOwnerAWSAccountId=account)
 		return queueName
 
 	def sendMessage(queueName, message):
