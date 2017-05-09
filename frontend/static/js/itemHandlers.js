@@ -78,6 +78,7 @@ class ItemHandler {
             "locale": 'auto'
         }, {
             "method": "charge",
+            "productId" : this.id,
             "amount": amount
         });
     }
