@@ -11,9 +11,9 @@ application = Flask(__name__,template_folder='templates')
 
 CORS(application)
 
-application.config['MONGO_DBNAME'] = 'userdb'
-application.config['MONGO_URI'] = 'mongodb://Gunnernet:nachiket_99@ds147069.mlab.com:47069/userdb'
-application.secret_key = 'newsecret'
+application.config['MONGO_DBNAME'] = 'user_db'
+application.config['MONGO_URI'] = 'mongodb://user1:user1password@ds149040.mlab.com:49040/user_db'
+application.secret_key = 'super-secret'
 
 mongo = PyMongo(application)
 
@@ -36,10 +36,10 @@ def payment():
     currentUser = content['email']
     total = float(content['amount'])
 
-    userhistory = mongo.db.userhistory
+    orders = mongo.db.orders
     now = str(datetime.date(datetime.now()))
 
-    userhistory.insert_one({"name": currentUser, "TransactionAmount": total, "TransactionTime": now})
+    orders.insert_one({"name": currentUser, "TransactionAmount": total, "TransactionTime": now})
 
     return ('', 204)
 
