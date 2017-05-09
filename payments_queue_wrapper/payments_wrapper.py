@@ -29,7 +29,7 @@ def payments_handler(event, context):
 def payments(current_caid):
 	queue_url = sqs_queue.get_queue_url(QueueName='ordersQueue')
 	messages = sqs_queue.receive_message(
-		QueueUrl=queue_url,
+		QueueUrl=queue_url['QueueUrl'],
 		AttributeNames=['caid']
 	)
 	for message in messages:
