@@ -10,8 +10,7 @@ import requests
 from bson.objectid import ObjectId
 from bson import json_util
 import yaml
-
-# Need to include import stuff for SQS
+from boto3 import Session
 
 stripe_keys = {
   'secret_key': 'sk_test_Hrqp4whe1ZsCTyLzol7jth8v',
@@ -27,6 +26,12 @@ application.config['SECRET_KEY'] = 'super-secret'
 connectdb = MongoClient('mongodb://user1:user1password@ds149030.mlab.com:49030/charge_db')["charge_db"]
 
 # Set up SQS connection to queue
+try:
+    sqs_queue = SQSServices()
+    sqs = boto3.resource('sqs')
+except Exception as e:
+    print("Queue already exists")
+
 
 @application.route('/sns', methods = ['GET', 'POST', 'PUT'])
 def snsFunction():
@@ -95,12 +100,25 @@ def charge(notification):
 
     # Since we have the caid, I can get the object and add it to the queue right here, so this is the object that is retrieved upon poll
 
+    paymentsQueue = sqs_queue.getQueueName('ordersQueue')
+    paymentObject = connectdb.caids.find_one({"_id": ObjectId(str(caid))})
+    
+    # print paymentsqueue
+    # print json.loads(paymentObject)
+
     # send order to user info microservice to store stuff into db
     # add order to user info microservice queue
     status = request.post('https://ec2-52-15-159-218.us-east-2.compute.amazonaws.com:5000/order', json=transaction)
     print "COOL STUFF BRO"
     # return "COOL STUFF BRO"
     return status
+
+@application.route('/sqs', methods=['GET'])
+def getQueue():
+    account = str(6488-1277-1825)
+    paymentsQueue = sqs_queue.getQueueName('ordersQueue', account)
+    print paymentsQueue
+    return str(paymentsQueue)
 
 # run the app.
 if __name__ == "__main__":
