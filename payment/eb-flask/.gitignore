@@ -3,3 +3,4 @@
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 configurations.txt
+.DS_Store
