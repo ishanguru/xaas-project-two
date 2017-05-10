@@ -57,6 +57,12 @@ def lambda_handler(event, context):
     # users = user_db.users
     print("EMAIL")
     print(email)
+    #we want http gets to be browserable so we didnt add other rules.
+    #however in a real system such rules could be
+    #1. dont allow users to get informaiton about users beyond themselves
+    #2. dont allow users to look up orders they werent not a party to
+    #3. have an admin account that can get orders
+    #4. have and admin account that can get all users.
     user = user_db.users.find_one({"name": email})
     if (user["password"] == password):
         # policy.allowAllMethods()
