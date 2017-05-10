@@ -32,9 +32,14 @@ function pollCharge(count,info) {
         type: "GET",
         url: "https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/p3v1/orders/" + data["aid"],
         success: function(reply) {
-            reply = JSON.parse(reply);
             console.log(reply);
-            if (reply["status"] === "success") {
+            try {
+                reply = JSON.parse(reply);
+            } catch (e) {
+                handleFailure(count,reply)
+            }
+            console.log(reply);
+            if (reply["status"] && reply["status"] === "success") {
                 processingHandler.updateStatus("success", "That operation worked!");
             } else {
                 handleFailure(count,reply)
