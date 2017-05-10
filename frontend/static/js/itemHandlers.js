@@ -79,6 +79,7 @@ class ItemHandler {
         }, {
             "method": "charge",
             "productId" : this.id,
+            "user" : accountHandler.userName,
             "amount": amount
         });
     }

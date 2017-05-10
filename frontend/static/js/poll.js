@@ -29,10 +29,8 @@ function pollCharge(count,info) {
     data["aid"] = info;
     console.log(data);
     $.ajax({
-        type: "POST",
-        url: "https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com:8080/getpayment",
-        data: JSON.stringify(data),
-        contentType: "application/json; charset=utf-8",
+        type: "GET",
+        url: "https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/p3v1/orders/" + data["aid"],
         success: function(reply) {
             reply = JSON.parse(reply);
             console.log(reply);
