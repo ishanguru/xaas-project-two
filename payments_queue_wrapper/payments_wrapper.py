@@ -1,5 +1,8 @@
 import boto3
 import ConfigParser
+import os
+from boto3 import Session
+import json
 
 config_file_path = os.environ['LAMBDA_TASK_ROOT'] + '/configurations.txt'
 
@@ -22,22 +25,24 @@ except Exception as e:
     print("Queue already exists")
 
 def payments_handler(event, context):
-	current_caid = event['caid']
+	current_caid = event['orderid']
 	result = payments(current_caid)
 	return result
 
 def payments(current_caid):
 	queue_url = sqs_queue.get_queue_url(QueueName='ordersQueue')
-	messages = sqs_queue.receive_message(
-		QueueUrl=queue_url['QueueUrl'],
-		AttributeNames=['caid']
-	)
-	for message in messages:
-		caid = message.message_attributes.get('caid').get('StringValue')
-		if caid == current_caid:
-			body = message['body']
-			message.delete()
+	messages = sqs_queue.receive_message(QueueUrl=queue_url['QueueUrl'])
+	print len(messages['Messages']), messages['Messages']
+	for item in messages['Messages']:
+# 		caid = message.message_attributes.get('caid').get('StringValue')
+		caid = item['Body']
+		caid = json.loads(caid)
+		print "item", caid['_id']
+		print "us", current_caid
+		if caid['_id'] == current_caid:
+			body = item['Body']
+			print body
+			sqs_queue.delete_message(QueueUrl=queue_url['QueueUrl'],ReceiptHandle=item['ReceiptHandle'])
 			return body
-
-	return "Payment not processed"
 	
+	return json.dumps({"status":"Item not found"})
