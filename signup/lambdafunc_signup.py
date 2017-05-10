@@ -17,49 +17,54 @@ verificationconn = boto.ses.connect_to_region(
     aws_access_key_id='AKIAIPCCURMQDHIB32HQ',
     aws_secret_access_key='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')
 
+def userToHATEOAS(user):
+    if (not user) or ("name" not in user):
+        raise Exception ({'user_error': 'The username seems to be existing'})
+    dictToReturn = {}
+    dictToReturn["data"]={}
+    dictToReturn["data"]["name"] = (str(user["name"]))
+    dictToReturn["links"] =[]
+    dictToReturn["links"].append({"rel": "self", "href": "/users/" + str(user["_id"]) })
+
+    orders = connectdb.orders.find({"user":(user["name"])})
+    if (True):
+         for order in orders:
+             orderid = order["_id"]
+             dictToReturn["links"].append({"rel": "orders", "href": "/orders/" + str(orderid)})
+    return dictToReturn
 
 def lambda_handler(event, context):
     print("EVENT")
     print(str(event))
+    orders=[]
     if event and "userid" in event:
         user = connectdb.users.find_one({"_id": ObjectId(event["userid"])})
-        if (not user) or ("name" not in user):
-            raise Exception (json.dumps({'user_error': 'The username seems to be existing'}))
-            #return (json.dumps({"reason": "client_error","errors": []}))
+        return userToHATEOAS(user)
 
-        order = connectdb.orders.find_one({"user":(user["name"])})
-        #orderid = connectdb.orders.find_one({"_id": ObjectId(order["_id"])})
-        dictToReturn = {}
-        dictToReturn["user"]=str(user["name"])
-        dictToReturn["user"]=[]
-        dictToReturn["orders"]={}
-        dictToReturn["user"].append({"rel": "self", "href": "/users/" + event["userid"] })
-        # dictToReturn["user"]["name"] = str(user["name"])
-        #dictToReturn["user"].append({"rel": "self"})
-        # dictToReturn["user"]["href"] = "/users/" + event["userid"]
-        dictToReturn["orders"]["href"] = "/orders"
-        dictToReturn["orders"]["product"] = str(order["product"])
-        dictToReturn["orders"]["amount"] = str(order["amount"])
 
-        return dictToReturn
 
     users = db.users
 
     if ("Records" in event):
         event = event["Records"][0]["Sns"]["Message"]
 
-    # event = json.loads(str(event))
-    verifymail = {"username": "DONTSENDANEMAIL", "id": "DONTSENDANEMAIL"}
+        # event = json.loads(str(event))
+        verifymail = {"username": "DONTSENDANEMAIL", "id": "DONTSENDANEMAIL"}
 
-    existing_user = users.find_one({'_id': ObjectId(event["dbUserId"])})
-    if existing_user:
-        connectdb.users.update_one(
-            {"_id": ObjectId(event["dbUserId"])},
-            {'$set': {'status': 'unverified', 'name': event["username"], 'password': event["password"]}}
-        )
-        newuser = event['username']
-        print(newuser)
-        print('creating user for', event['username'])
-        hashpass = event['password']
-        verifymail = {"username": str(newuser), "id": event["dbUserId"]}
-    return verifymail
+        existing_user = users.find_one({'_id': ObjectId(event["dbUserId"])})
+        if existing_user:
+            connectdb.users.update_one(
+                {"_id": ObjectId(event["dbUserId"])},
+                {'$set': {'status': 'unverified', 'name': event["username"], 'password': event["password"]}}
+            )
+            newuser = event['username']
+            print(newuser)
+            print('creating user for', event['username'])
+            hashpass = event['password']
+            verifymail = {"username": str(newuser), "id": event["dbUserId"]}
+        return verifymail
+    users=[]
+    found_users = (connectdb.users.find())
+    for u in found_users:
+        users.append(userToHATEOAS(u))
+    return users
