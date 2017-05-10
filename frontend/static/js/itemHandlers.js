@@ -57,7 +57,7 @@ class ItemHandler {
                     type: "POST",
                     dataType : "json",
                     contentType: "application/json; charset=utf-8",
-                    url: "https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/exp5/charge",
+                    url: "https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/p3v1/orders",
                     headers: {"Authorization": that.accountHandler.jwt_token},
                     data: JSON.stringify(Object.assign(token, {"jwt": that.accountHandler.jwt_token})),
                     success: function (data) {
