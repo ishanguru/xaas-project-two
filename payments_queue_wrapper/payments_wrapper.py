@@ -81,4 +81,4 @@ def payments(current_caid):
         paymentObject["_id"] = str(current_caid)
         return getDictWithUserInfo(paymentObject)
 
-    return json.dumps({"status": "Item not found"})
+    raise Exception({"Not_Found": "Item not found"})
