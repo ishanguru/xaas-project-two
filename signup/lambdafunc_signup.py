@@ -24,9 +24,23 @@ def lambda_handler(event, context):
     if event and "userid" in event:
         user = connectdb.users.find_one({"_id": ObjectId(event["userid"])})
         if (not user) or ("name" not in user):
-            return "error"
+            raise Exception (json.dumps({'user_error': 'The username seems to be existing'}))
+            #return (json.dumps({"reason": "client_error","errors": []}))
+
+        order = connectdb.orders.find_one({"user":(user["name"])})
+        #orderid = connectdb.orders.find_one({"_id": ObjectId(order["_id"])})
         dictToReturn = {}
-        dictToReturn["name"] = str(user["name"])
+        dictToReturn["user"]=str(user["name"])
+        dictToReturn["user"]=[]
+        dictToReturn["orders"]={}
+        dictToReturn["user"].append({"rel": "self", "href": "/users/" + event["userid"] })
+        # dictToReturn["user"]["name"] = str(user["name"])
+        #dictToReturn["user"].append({"rel": "self"})
+        # dictToReturn["user"]["href"] = "/users/" + event["userid"]
+        dictToReturn["orders"]["href"] = "/orders"
+        dictToReturn["orders"]["product"] = str(order["product"])
+        dictToReturn["orders"]["amount"] = str(order["amount"])
+
         return dictToReturn
 
     users = db.users
@@ -47,5 +61,5 @@ def lambda_handler(event, context):
         print(newuser)
         print('creating user for', event['username'])
         hashpass = event['password']
-        verifymail = {"username": str(newuser), "id": id}
+        verifymail = {"username": str(newuser), "id": event["dbUserId"]}
     return verifymail
