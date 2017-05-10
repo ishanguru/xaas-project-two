@@ -41,9 +41,10 @@ def lambda_handler(event, context):
                 input=str(json.dumps(userEventInfo))
             )
         return dbUserId
-    elif method == "/charge":
-        chargeDb = MongoClient('mongodb://user1:user1password@ds149030.mlab.com:49030/charge_db')["charge_db"]
-        aid = str(chargeDb.caids.insert_one({"status": "undefined"}).inserted_id);
+    elif method == "/orders":
+        userDb = MongoClient('mongodb://user1:user1password@ds149040.mlab.com:49040/user_db')["user_db"]
+        aid = str(userDb.orders.insert_one({}).inserted_id)
+        # aid = str(chargeDb.caids.insert_one({"status": "undefined"}).inserted_id)
         userEventInfo["aid"] = aid
         response = sns_client.publish(
             TopicArn='arn:aws:sns:us-east-1:648812771825:payments',

@@ -83,7 +83,7 @@ def charge(notification):
     amount = notification["amount"]
     caid = notification["aid"]
     email = notification["email"]
-    source=notification["id"]
+    source = notification["id"]
     
     customer = stripe.Customer.create(
         email=email,
