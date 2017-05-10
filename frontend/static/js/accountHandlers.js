@@ -4,7 +4,6 @@ function handleLogin(formData) {
         formData["username"] = formData["Email"];
     }
     $('#loginModal').modal('hide');
-    console.log("login");
     $.ajax({
         type: "POST",
         url: 'https://ibw5jd0k4c.execute-api.us-east-1.amazonaws.com/p3v1/users/login',

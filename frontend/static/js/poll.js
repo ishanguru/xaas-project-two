@@ -41,7 +41,7 @@ function pollCharge(count,info) {
                 }
             }
             console.log(reply);
-            if ((reply["status"] && reply["status"] === "success")) {
+            if ((reply["data"] && reply["data"]["status"] && reply["data"]["status"] === "success")) {
                 processingHandler.updateStatus("success", "That operation worked!");
                 lastOrder = data["aid"];
                 lastOrderSuccess = true;
