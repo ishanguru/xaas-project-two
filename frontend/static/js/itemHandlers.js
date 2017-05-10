@@ -1,3 +1,5 @@
+var lastOrder = null;
+var lastOrderSuccess = false;
 class ItemHandler {
     constructor(amount, name, description, accountHandler, elementId, processingHandler, id) {
         this.id = id;
@@ -61,6 +63,8 @@ class ItemHandler {
                     headers: {"Authorization": that.accountHandler.jwt_token},
                     data: JSON.stringify(Object.assign(token, {"jwt": that.accountHandler.jwt_token})),
                     success: function (data) {
+                        lastOrder = data;
+                        lastOrderSuccess = false;
                         startPollCharge(data);
                     },
                     error: function (data) {

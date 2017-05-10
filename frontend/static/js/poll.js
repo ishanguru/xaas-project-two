@@ -36,11 +36,17 @@ function pollCharge(count,info) {
             try {
                 reply = JSON.parse(reply);
             } catch (e) {
-                handleFailure(count,reply)
+                if (!lastOrderSuccess) {
+                    handleFailure(count, reply)
+                }
             }
             console.log(reply);
-            if (reply["status"] && reply["status"] === "success") {
+            if ((reply["status"] && reply["status"] === "success")) {
                 processingHandler.updateStatus("success", "That operation worked!");
+                lastOrder = data["aid"];
+                lastOrderSuccess = true;
+            } else if ((lastOrder === data["aid"] && lastOrderSuccess)) {
+                console.log("delayed response");
             } else {
                 handleFailure(count,reply)
             }
