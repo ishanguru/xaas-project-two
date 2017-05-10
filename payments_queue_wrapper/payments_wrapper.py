@@ -23,7 +23,7 @@ except Exception as e:
 
 def payments_handler(event, context):
 	current_caid = event['caid']
-	result = payments_handler(current_caid)
+	result = payments(current_caid)
 	return result
 
 def payments(current_caid):
