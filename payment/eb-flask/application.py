@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, jsonify,app, session
 import stripe
 import os
 import boto3
-# from sqs_services import SQSServices
 from pymongo import MongoClient
 from datetime import timedelta
 import json
@@ -39,7 +38,7 @@ application = Flask(__name__)
 application.debug = True
 application.config['SECRET_KEY'] = 'super-secret'
 
-connectdb = MongoClient('mongodb://user1:user1password@ds149030.mlab.com:49030/charge_db')["charge_db"]
+connectdb = MongoClient('mongodb://user1:user1password@ds149040.mlab.com:49040/user_db')["user_db"]
 
 # Set up SQS connection to queue
 try:
@@ -98,27 +97,31 @@ def charge(notification):
             currency='usd',
             description='Flask Charge'
         )
-
-        connectdb.caids.find_one_and_replace({"_id": ObjectId(str(caid))},{"status": "success"})
+        # connectdb.orders.find_one_and_replace({"_id": ObjectId(str(caid))},{"status": "success"})
         pass
     except Exception as e:
         print "Error making payment"
     
-    result = {}
-    result['status'] = charge['status']
-    result['amount'] = charge['amount']
-    result['email'] = notification['email']
-    result['productId'] = notification['productId']
-
-    transaction = json.loads(result)
-    print(transaction)
+    # result = {}
+    # result['status'] = charge['status']
+    # result['amount'] = charge['amount']
+    # result['email'] = notification['email']
+    # result['productId'] = notification['productId']
 
     paymentsQueueUrl = sqs_queue.get_queue_url(QueueName='ordersQueue')
-    paymentObject = connectdb.caids.find_one({"_id": ObjectId(str(caid))})
     
+    paymentObject = connectdb.orders.find_one({"_id": ObjectId(str(caid))})
+    if paymentObject:
+        connectdb.orders.update_one(
+            {"_id": ObjectId(str(caid))},
+            {'$set': {'status': 'success', 'amount': charge['amount'], 'email': notification['email'], 'productId': notification['productId']}}
+        )
+    
+    paymentObject["_id"] = str(caid)
+
     queueResponse = sqs_queue.send_message(
-        QueueUrl=paymentsQueueUrl, 
-        MessageBody=paymentObject['QueueUrl'],
+        QueueUrl=paymentsQueueUrl['QueueUrl'], 
+        MessageBody=json.dumps(paymentObject),
         MessageAttributes={
             'caid': {
                 'StringValue': str(caid),
@@ -129,10 +132,10 @@ def charge(notification):
 
     # send order to user info microservice to store stuff into db
     # add order to user info microservice queue
-    status = request.post('https://ec2-52-15-159-218.us-east-2.compute.amazonaws.com:5000/order', json=transaction)
-    print "COOL STUFF BRO"
-    # return "COOL STUFF BRO"
-    return status
+    # status = request.post('https://ec2-52-15-159-218.us-east-2.compute.amazonaws.com:5000/order', json=transaction)
+    # print "COOL STUFF BRO"
+    return "COOL STUFF BRO"
+    # return status
 
 # @application.route('/sqs', methods=['GET'])
 # def getQueue():

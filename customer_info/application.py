@@ -35,11 +35,12 @@ def payment():
     content = request.get_json(silent=True)
     currentUser = content['email']
     total = float(content['amount'])
+    productId = content['productId']
 
     orders = mongo.db.orders
     now = str(datetime.date(datetime.now()))
 
-    orders.insert_one({"name": currentUser, "TransactionAmount": total, "TransactionTime": now})
+    orders.insert_one({"user": currentUser, "product": 1, "amount": total, "timestamp": now})
 
     return ('', 204)
 
