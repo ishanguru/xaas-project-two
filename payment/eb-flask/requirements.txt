@@ -1,6 +1,6 @@
 cffi==1.9.1
 click==6.7
-cryptography==1.7.2
+cryptography==3.2
 enum34==1.1.6
 Flask==0.12
 Flask-SQLAlchemy==2.2
